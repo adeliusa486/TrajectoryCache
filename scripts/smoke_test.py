@@ -160,7 +160,7 @@ def main() -> None:
     lines.append("- All core modules imported successfully" if passed == len(RESULTS)
                  else "- Some modules failed — see failures above")
 
-    report_path.write_text("\n".join(lines))
+    report_path.write_text("\n".join(lines), encoding="utf-8")
     print(f"Report written to: {report_path}\n")
 
     sys.exit(0 if failed == 0 else 1)
