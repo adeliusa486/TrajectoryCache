@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      target: runtime
+    image: trajectorycache:latest
+    container_name: tc_api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./experiments/results:/app/experiments/results
+      - ./configs:/app/configs:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Optional Jupyter notebook server for exploration
+  notebook:
+    build:
+      context: .
+      target: deps
+    image: trajectorycache-notebook
+    container_name: tc_notebook
+    command: >
+      jupyter notebook
+        --ip=0.0.0.0
+        --port=8888
+        --no-browser
+        --NotebookApp.token=''
+        --NotebookApp.password=''
+        --notebook-dir=/app/notebooks
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+    profiles:
+      - notebook   # only started with: docker compose --profile notebook up
+
+volumes: {}

@@ -1,0 +1,22 @@
+# TrajectoryCache — default simulation configuration
+# All values can be overridden with TC_<FIELD_UPPER>=value env vars.
+
+# ── Highway ──────────────────────────────────────────────────────────────────
+road_length: 10000.0       # Total highway length (metres)
+n_vehicles: 50             # Number of simulated vehicles
+dt: 1.0                    # Simulation time step (seconds)
+mean_speed: 25.0           # Mean vehicle speed (m/s ≈ 90 km/h)
+speed_std: 5.0             # Speed standard deviation (m/s)
+
+# ── Content ───────────────────────────────────────────────────────────────────
+n_items: 200               # Catalog size
+zipf_alpha: 1.2            # Zipf skew parameter
+requests_per_step: 5       # Content requests generated per simulation step
+
+# ── Simulation ────────────────────────────────────────────────────────────────
+n_steps: 1000              # Steps after warm-up (measurement period)
+warmup_steps: 100          # Steps discarded before stats collection
+seed: 42                   # Global RNG seed (null = non-deterministic)
+
+# ── Cache ─────────────────────────────────────────────────────────────────────
+cache_capacity: 20         # Maximum items in cache (C_max)

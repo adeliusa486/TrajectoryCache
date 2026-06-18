@@ -1,101 +1,224 @@
-# TrajectoryCache
+# TrajectoryCache 🚗📡
 
-**Trajectory-Aware Proactive Edge Caching for Vehicular Networks**
+**Spatial-urgency-aware edge cache replacement for vehicular networks (V2X / MEC)**
 
-A research implementation of the **TrajectoryCache** algorithm — a joint spatial-urgency and popularity scoring cache replacement policy for V2I edge caches. Evaluated in two traffic environments: independent vehicles (SimPy) and SUMO Krauss car-following platooning.
-
----
-
-## Paper Results (Verified Ground Truth)
-
-### α = 0.8 (High Skew) — Mean Cache Miss Rate across 10 seeds
-
-| Policy         | SimPy (Independent) | SUMO (Platooning) |
-|----------------|--------------------|--------------------|
-| LRU            | 6.14%              | 20.37%             |
-| LFU            | 4.99%              | 14.79%             |
-| **TC (W=0.1)** | **4.54%**          | **14.34%**         |
-| TC (W=0.2)     | 4.64%              | 14.79%             |
-| TC (W=0.5)     | 4.84%              | 15.67%             |
-
-TC with W=0.1 achieves the **best miss rate** in both environments.
+[![CI](https://github.com/your-org/trajectorycache/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/trajectorycache/actions)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## Repository Structure
+## Overview
+
+TrajectoryCache (TC) is a **mobility-aware content caching policy** for roadside edge servers in Vehicle-to-Everything (V2X) networks. Instead of evicting items purely by recency or frequency, TC jointly considers:
+
+- **Spatial urgency** — how soon a nearby vehicle will need a given content item based on its current position, speed, and heading.
+- **Historical popularity** — how frequently the item has been requested within a configurable sliding time-window.
+
+The composite eviction score is:
 
 ```
-TrajectoryCache/
-├── simpy_simulation.py      # SimPy independent-traffic simulation + LRU/LFU/FIFO/Random/TC
-├── sumo_cache_sim.py        # SUMO XML trace reader + same cache policies
-├── run_alpha_0_8_raw.py     # Main 10-seed journal evaluation (α=0.8)
-├── run_alpha_0_5.py         # Robustness check (α=0.5)
-├── run_alpha_1.py           # High-skew check (α=1.0)
-├── run_journal_eval.py      # Full W-parameter sweep + plots
-├── run_50_seeds.py          # 50-seed confidence sweep
-├── matlab_simulation.py     # MATLAB equivalent benchmark
-├── create_sumo_files.py     # Generates SUMO .rou.xml / .sumocfg / fcd.xml traces
-└── results/
-    └── journal_sweep_results.png
+Score(f) = W · Urgency(f) + (1 − W) · Popularity(f)
+```
+
+where `W ∈ [0, 1]` is a tunable weight. At `W=0`, TC reduces to normalised-LFU; at `W=1`, it becomes purely urgency-driven.
+
+---
+
+## Architecture
+
+```
+src/trajectorycache/
+├── cache/
+│   ├── base.py          ← Abstract BaseCache + CacheItem
+│   ├── trajectory.py    ← TrajectoryCache (main algorithm)
+│   ├── lru.py           ← LRU baseline
+│   └── baselines.py     ← LFU, Random, FIFO baselines
+├── simulation/
+│   ├── highway.py       ← 1-D highway vehicle model
+│   └── runner.py        ← SimulationRunner orchestrator
+├── content/
+│   └── catalog.py       ← Geo-tagged content + Zipf requests
+├── evaluation/
+│   ├── metrics.py       ← EvalMetrics, hit-rate stats
+│   └── benchmark.py     ← Multi-policy benchmark runner
+├── api/
+│   └── app.py           ← FastAPI REST interface
+└── utils/
+    ├── config.py        ← YAML config loader
+    ├── logging.py       ← Logging setup
+    └── plotting.py      ← matplotlib helpers
 ```
 
 ---
 
-## How to Run
+## Quick Start
 
-### 1. Install Dependencies
+### Installation
+
 ```bash
-pip install simpy numpy matplotlib
+git clone https://github.com/your-org/trajectorycache.git
+cd trajectorycache
+pip install -e ".[dev]"
 ```
 
-### 2. SimPy (Independent Traffic) — No SUMO needed
-```bash
-python simpy_simulation.py
+### Python API
+
+```python
+from trajectorycache import TrajectoryCache, SimulationRunner, SimulationConfig
+
+# Create cache
+cache = TrajectoryCache(capacity=20, urgency_weight=0.5)
+
+# Configure simulation
+cfg = SimulationConfig(
+    n_steps=1000,
+    n_vehicles=50,
+    cache_capacity=20,
+    seed=42,
+)
+
+# Run
+runner = SimulationRunner(cache=cache, config=cfg)
+result = runner.run()
+print(f"Hit rate: {result.hit_rate:.2%}")
 ```
 
-### 3. SUMO Traces — Generate first, then simulate
-```bash
-# Step 1: Generate SUMO traces (requires SUMO installed)
-python create_sumo_files.py
+### Benchmark all policies
 
-# Step 2: Run hybrid evaluation
-python run_alpha_0_8_raw.py
+```bash
+make benchmark
+# or
+python scripts/run_benchmark.py --n-steps 1000 --capacity 20
 ```
 
-### 4. Full Journal Evaluation
+### Hyperparameter sweep
+
 ```bash
-python run_journal_eval.py
+python scripts/sweep.py --config configs/sweep.yaml
+```
+
+### Start REST API
+
+```bash
+make api
+# → http://localhost:8000/docs
+```
+
+### Docker
+
+```bash
+docker compose up -d
+curl http://localhost:8000/health
 ```
 
 ---
 
-## Key Algorithm — TrajectoryCache Score
+## REST API
 
-For each file `f` in the cache (at eviction time):
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | Liveness probe |
+| `GET` | `/cache/status` | Current cache state + stats |
+| `POST` | `/cache/configure` | Reconfigure cache parameters |
+| `POST` | `/cache/request` | Simulate a content request |
+| `POST` | `/cache/reset` | Clear cache |
+| `POST` | `/simulation/run` | Run full benchmark |
+| `GET` | `/simulation/results` | Retrieve last benchmark results |
 
-```
-score(f) = W * urgency(f) + (1-W) * popularity(f)
-```
-
-Where:
-- **urgency(f)**: sum over active vehicles whose predicted position is within `GRZ_RADIUS` of file `f`'s mapped location → `1 / (1 + α * time_to_arrive)`
-- **popularity(f)**: relative request frequency in a 300-second sliding window
-- **W**: tunable weight (best at W=0.1, meaning popularity-dominant with spatial tie-breaking)
-
-The file with the **lowest score** is evicted when a new file with a **higher score** arrives.
-
----
-
-## Why TC Beats LRU/LFU
-
-- **SimPy**: TC's spatial urgency signal pre-loads files that approaching vehicles will request, beating pure recency (LRU) and frequency (LFU) by ~1.5–2%
-- **SUMO**: Platooning creates synchronized demand bursts. TC detects the incoming platoon via vehicle trajectory prediction and pre-prioritises co-located content **before** the burst hits, achieving 6% lower miss rate than LRU
+Full interactive docs at **`/docs`** (Swagger UI) and **`/redoc`**.
 
 ---
 
-## Citation
+## Configuration
 
-If you use this code, please cite:
+Edit `configs/simulation.yaml` or override with environment variables (`TC_<FIELD>=value`):
 
-> [Paper title and authors — to be added upon acceptance]
-> Vehicular Communications, Elsevier, 2025
+```yaml
+road_length:       10000.0   # metres
+n_vehicles:        50
+n_steps:           1000
+cache_capacity:    20
+zipf_alpha:        1.2
+urgency_weight:    0.5       # W in [0,1]
+seed:              42
+```
+
+---
+
+## Testing
+
+```bash
+make test            # full suite with coverage
+make test-unit       # unit tests only
+make test-integration
+make smoke           # quick smoke validation
+```
+
+---
+
+## TrajectoryCache Algorithm Details
+
+### Spatial Urgency
+
+For each cached item `f` at highway position `ℓ_f`:
+
+```
+x̂_v = x_v + s_v · d_v · T_pred        (predicted vehicle position)
+TTE(v,f) = |ℓ_f − x_v| / s_v          (time-to-encounter)
+u(v,f)   = 1 / (1 + α_d · TTE(v,f))   (per-vehicle urgency)
+U_raw(f) = Σ u(v,f)  [for vehicles within r_rel of x̂_v]
+```
+
+### Popularity
+
+Sliding-window request count normalised by the maximum count in the candidate set C⁺.
+
+### Eviction Decision
+
+When the cache is full and a new item arrives, TC scores all items in `C⁺ = cached_items ∪ {new_item}`. The item with the lowest composite score is evicted (or the new item is discarded if it scores lowest).
+
+---
+
+## Benchmarks
+
+Example results (`n_steps=1000, capacity=20, n_vehicles=50, zipf_alpha=1.2`):
+
+| Policy | Hit Rate |
+|--------|----------|
+| TrajectoryCache (W=0.5) | **~55–65%** |
+| LFU | ~55–63% |
+| LRU | ~50–57% |
+| FIFO | ~46–52% |
+| Random | ~44–50% |
+
+*Results vary with traffic density, content distribution, and hyperparameters.*
+
+---
+
+## Project Structure
+
+```
+trajectorycache/
+├── src/trajectorycache/   ← Main package
+├── tests/
+│   ├── unit/              ← Unit tests
+│   └── integration/       ← End-to-end tests
+├── configs/               ← YAML configs
+├── scripts/               ← CLI scripts
+├── experiments/results/   ← Benchmark outputs
+├── docs/                  ← Extended documentation
+├── notebooks/             ← Jupyter exploration
+├── deployment/k8s/        ← Kubernetes manifests
+└── .github/workflows/     ← CI/CD
+```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). PRs welcome!
+
+## License
+
+[MIT](LICENSE)

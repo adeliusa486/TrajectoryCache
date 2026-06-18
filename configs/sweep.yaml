@@ -1,0 +1,20 @@
+# TrajectoryCache hyperparameter sweep configuration.
+# Used by scripts/sweep.py to grid-search optimal W, alpha_d, r_rel.
+
+base:
+  capacity: 20
+  pop_window: 300.0
+  t_pred: 3.0
+
+sweep:
+  urgency_weight: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+  alpha_d:        [0.1, 0.3, 0.5, 0.7, 1.0]
+  r_rel:          [200.0, 500.0, 1000.0, 2000.0]
+
+simulation:
+  n_steps: 500
+  warmup_steps: 50
+  n_vehicles: 50
+  n_items: 200
+  cache_capacity: 20
+  seed: 42
