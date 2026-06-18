@@ -52,7 +52,7 @@ class TrajectoryCache(BaseCache):
         pop_window: float = 300.0,
         t_pred: float = 3.0,
         alpha_d: float = 0.5,
-        r_rel: float = 500.0,
+        r_rel: float = 150.0,
     ) -> None:
         super().__init__(capacity)
 
