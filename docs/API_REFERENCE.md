@@ -16,9 +16,9 @@ class TrajectoryCache(capacity, urgency_weight=0.5, pop_window=300.0,
 | `capacity` | int | — | Max items in cache (`C_max`) |
 | `urgency_weight` | float | 0.5 | `W ∈ [0,1]`: weight of spatial urgency |
 | `pop_window` | float | 300.0 | Sliding popularity window (seconds) |
-| `t_pred` | float | 3.0 | Vehicle position lookahead horizon (seconds) |
-| `alpha_d` | float | 0.5 | Urgency decay rate (s⁻¹) |
-| `r_rel` | float | 500.0 | Relevance radius (metres) |
+| `t_pred` | float | 30.0 | Vehicle position lookahead horizon (seconds) |
+| `alpha_d` | float | 0.1 | Urgency decay rate (s⁻¹) |
+| `r_rel` | float | 800.0 | Relevance radius (metres) |
 
 **Methods**
 

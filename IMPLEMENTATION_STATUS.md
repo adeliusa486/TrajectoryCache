@@ -122,7 +122,7 @@
 | Scalability | 6/10 | Single-process; needs Redis + async for multi-worker |
 | Reliability | 7/10 | No retries, no circuit breakers on backhaul |
 | Security | 6/10 | No auth on API; acceptable for research prototype |
-| Reproducibility | 10/10 | Seeded RNG, YAML configs, Docker, version-pinned deps |
+| Reproducibility | 10/10 | Seeded RNG, YAML configs, Docker, version-pinned deps (requests_per_step decoupled from configs) |
 | Documentation | 9/10 | README, arch doc, API ref, inline docstrings |
 
 **Overall: Ready for research/prototype deployment. Needs thread-safety and auth before production.**

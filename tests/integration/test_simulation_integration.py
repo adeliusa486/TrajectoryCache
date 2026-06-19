@@ -25,7 +25,6 @@ def fast_config() -> SimulationConfig:
         n_vehicles=10,
         n_items=50,
         cache_capacity=10,
-        requests_per_step=3,
         seed=42,
     )
 
