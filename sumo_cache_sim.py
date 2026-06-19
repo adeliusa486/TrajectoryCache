@@ -1,3 +1,25 @@
+"""
+DEPRECATED LEGACY SCRIPT — DO NOT USE FOR NEW EXPERIMENTS
+==========================================================
+This file parses SUMO FCD XML trace files (fcd_{seed}.xml) that are NOT
+included in the repository. It also contains a TCCache implementation with
+known parameter mismatches vs. the canonical src/trajectorycache/ package:
+
+    GRZ_RADIUS = 150.0   →  should be r_rel = 800.0  (configs/simulation.yaml)
+    T_PREDICT  = 3.0     →  should be t_pred = 30.0  (configs/simulation.yaml)
+    ALPHA      = 0.5     →  should be alpha_d = 0.1  (configs/simulation.yaml)
+
+Without the SUMO FCD trace files this script cannot run. The SUMO traces were
+generated with SUMO 1.27 using the Krauss car-following model on a straight
+10 km highway network. To regenerate them see README.md §Reproducing SUMO Results.
+
+For all reproducible experiments without SUMO, use the canonical kinematic pipeline:
+    python scripts/run_benchmark.py
+    python scripts/run_multiseed.py
+
+This file is retained for historical reference and will be removed in a future
+cleanup commit once SUMO traces are archived in a Zenodo dataset.
+"""
 import xml.etree.ElementTree as ET
 import random
 import math
@@ -7,6 +29,7 @@ TOWER_POS = 5000
 TOWER_RADIUS = 500
 NUM_FILES = 200
 CACHE_CAPACITY = 20
+
 
 class LRUCache:
     def __init__(self, capacity):

@@ -138,19 +138,57 @@ Under dense platooning traffic with the 1.6km bounded geographic constraint, Tra
 ## Project Structure
 
 ```
-trajectorycache/
-├── src/trajectorycache/   ← Main package
-├── tests/
-│   ├── unit/              ← Unit tests
-│   └── integration/       ← End-to-end tests
-├── configs/               ← YAML configs
-├── scripts/               ← CLI scripts
-├── experiments/results/   ← Benchmark outputs
-├── docs/                  ← Extended documentation
-├── notebooks/             ← Jupyter exploration
-├── deployment/k8s/        ← Kubernetes manifests
-└── .github/workflows/     ← CI/CD
+
+---
+
+## Reproducing SUMO Results
+
+The paper reports results under two simulation environments. The **kinematic pipeline** (`src/` + `scripts/`) is fully self-contained and reproducible from this repository. The **SUMO pipeline** requires external trace files.
+
+### Kinematic pipeline (fully reproducible)
+
+```bash
+# Single-seed benchmark
+python scripts/run_benchmark.py
+
+# Multi-seed paper results (10 seeds, alpha=0.8 and alpha=0.5)
+python scripts/run_multiseed.py
+
+# W-parameter ablation sweep
+python scripts/run_wsweep.py
+
+# Vehicle density sweep
+python scripts/run_density_sweep.py
 ```
+
+### SUMO pipeline (requires trace files)
+
+The SUMO Floating Car Data (FCD) traces used in the original paper (`fcd_{seed}.xml`,
+one per seed) were generated with **SUMO 1.27** using the Krauss car-following model
+on a straight 10 km highway network. These files are not included in the repository
+due to size constraints.
+
+To regenerate the traces:
+
+1. Install SUMO 1.27: <https://sumo.dlr.de/>
+2. Generate network and route files:
+   ```bash
+   netgenerate --straight --output-file=highway.net.xml --length=10000
+   # Edit highway.rou.xml to set Krauss car-following model and 600 vehicles
+   ```
+3. Run SUMO for each seed to produce FCD output:
+   ```bash
+   sumo -c highway_seed{N}.sumocfg --fcd-output fcd_{N}.xml
+   ```
+4. Evaluate with the legacy script (note: contains outdated TC parameters — see deprecation warning):
+   ```bash
+   python sumo_cache_sim.py   # requires fcd_{seed}.xml files in working directory
+   ```
+
+> **Note:** `simpy_simulation.py` and `sumo_cache_sim.py` at the project root are
+> **deprecated legacy scripts** with incorrect TC parameters (`GRZ_RADIUS=150`,
+> `T_PREDICT=3.0`) that differ from the canonical `src/` implementation. They are
+> retained for historical reference. All new experiments should use `scripts/`.
 
 ---
 

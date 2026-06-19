@@ -100,8 +100,9 @@ def test_catalog_locations_in_range():
 
 def test_catalog_sample_request():
     cat = ContentCatalog(n_items=50, seed=0)
-    item = cat.sample_request()
+    item = cat.generate_requests(1)[0]  # sample_request() alias → generate_requests(1)[0]
     assert 0 <= item.item_id < 50
+
 
 
 def test_catalog_generate_requests_count():

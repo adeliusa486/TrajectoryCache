@@ -1,3 +1,34 @@
+"""
+DEPRECATED LEGACY SCRIPT — DO NOT USE FOR NEW EXPERIMENTS
+==========================================================
+This file was the original prototype implementation of TrajectoryCache used
+to generate early exploratory results. It contains known parameter mismatches
+with the canonical implementation in src/trajectorycache/:
+
+    GRZ_RADIUS = 150.0   →  should be r_rel = 800.0  (configs/simulation.yaml)
+    T_PREDICT  = 3.0     →  should be t_pred = 30.0  (configs/simulation.yaml)
+    ALPHA      = 0.5     →  should be alpha_d = 0.1  (configs/simulation.yaml)
+    W          = 0.5     →  should be W = 0.2 (optimal from sweep)
+
+These parameter differences cause the urgency signal to fire almost never
+(r_rel=150 on a 10 km road), producing incorrect results.
+
+For all reproducible experiments, use:
+    python scripts/run_benchmark.py              (single seed)
+    python scripts/run_multiseed.py              (10 seeds, alpha sweep)
+    python scripts/run_density_sweep.py          (density analysis)
+    python scripts/run_wsweep.py                 (W sensitivity)
+
+This file is retained for historical reference only and will be removed
+in a future cleanup commit.
+"""
+import warnings
+warnings.warn(
+    "simpy_simulation.py is a deprecated legacy prototype with wrong TC parameters. "
+    "Use scripts/run_benchmark.py instead.",
+    DeprecationWarning, stacklevel=2
+)
+
 import simpy
 import random
 import statistics
@@ -9,6 +40,7 @@ TOWER_RADIUS = 300          # coverage radius
 NUM_FILES = 200
 SIMULATION_TIME = 3600      # 1 simulated hour
 FILE_SIZE_MB = 1
+
 
 class LRUCache:
     def __init__(self, capacity):

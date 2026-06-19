@@ -80,7 +80,8 @@ class BaseCache(ABC):
 
     @property
     def hit_rate(self) -> float:
-        return 1.0 - self.miss_rate
+        total = self.total_requests
+        return self._hits / total if total > 0 else 0.0
 
     def reset_stats(self) -> None:
         """Reset hit/miss counters without clearing cache contents."""

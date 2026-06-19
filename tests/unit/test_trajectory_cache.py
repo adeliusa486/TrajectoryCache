@@ -144,7 +144,7 @@ def test_raw_urgency_nearby_vehicle():
     cache = TrajectoryCache(capacity=10, t_pred=5.0, r_rel=200.0, alpha_d=0.5)
     # Vehicle at x=300, speed=20, direction=+1 -> predicted x=400 -> within 200m of 500
     vehicles = [{"x": 300.0, "speed": 20.0, "direction": 1}]
-    urgency = cache._raw_urgency(500.0, vehicles)
+    urgency = cache._raw_urgency(500.0, vehicles, t=0.0)
     assert urgency > 0.0
 
 
@@ -152,14 +152,14 @@ def test_raw_urgency_far_vehicle():
     cache = TrajectoryCache(capacity=10, t_pred=1.0, r_rel=50.0)
     vehicles = [{"x": 0.0, "speed": 5.0, "direction": 1}]
     # predicted x = 5 -> |5 - 5000| >> 50  -> no contribution
-    urgency = cache._raw_urgency(5000.0, vehicles)
+    urgency = cache._raw_urgency(5000.0, vehicles, t=0.0)
     assert urgency == pytest.approx(0.0)
 
 
 def test_raw_urgency_zero_speed_skipped():
     cache = TrajectoryCache(capacity=10)
     vehicles = [{"x": 100.0, "speed": 0.0, "direction": 1}]
-    urgency = cache._raw_urgency(100.0, vehicles)
+    urgency = cache._raw_urgency(100.0, vehicles, t=0.0)
     assert urgency == pytest.approx(0.0)
 
 
