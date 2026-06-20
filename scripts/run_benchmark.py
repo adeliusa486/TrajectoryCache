@@ -11,6 +11,7 @@ Usage
     python scripts/run_benchmark.py --config configs/simulation.yaml --output experiments/results
     python scripts/run_benchmark.py --n-steps 2000 --capacity 30 --seed 7
 """
+
 from __future__ import annotations
 
 import argparse
@@ -30,8 +31,12 @@ from trajectorycache.utils.plotting import plot_bar_comparison
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="TrajectoryCache policy benchmark")
-    p.add_argument("--config", type=Path, default=Path("configs/simulation.yaml"), help="YAML config file")
-    p.add_argument("--output", type=Path, default=Path("experiments/results"), help="Output dir")
+    p.add_argument(
+        "--config", type=Path, default=Path("configs/simulation.yaml"), help="YAML config file"
+    )
+    p.add_argument(
+        "--output", type=Path, default=Path("experiments/results"), help="Output dir"
+    )
     p.add_argument("--n-steps", type=int, default=None)
     p.add_argument("--capacity", type=int, default=None)
     p.add_argument("--n-vehicles", type=int, default=None)
@@ -59,9 +64,11 @@ def main() -> None:
     if args.zipf_alpha is not None:
         cfg.zipf_alpha = args.zipf_alpha
 
-    print(f"Running benchmark | seed={cfg.seed} | n_steps={cfg.n_steps} | "
-          f"capacity={cfg.cache_capacity} | n_vehicles={cfg.n_vehicles} | "
-          f"zipf_alpha={cfg.zipf_alpha}")
+    print(
+        f"Running benchmark | seed={cfg.seed} | n_steps={cfg.n_steps} | "
+        f"capacity={cfg.cache_capacity} | n_vehicles={cfg.n_vehicles} | "
+        f"zipf_alpha={cfg.zipf_alpha}"
+    )
 
     results = run_benchmark(config=cfg, output_dir=args.output, verbose=args.verbose)
 

@@ -1,4 +1,5 @@
 """Centralised logging configuration for TrajectoryCache."""
+
 from __future__ import annotations
 
 import logging

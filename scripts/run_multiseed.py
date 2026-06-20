@@ -10,6 +10,7 @@ Usage
     python scripts/run_multiseed.py
     python scripts/run_multiseed.py --zipf-alpha 0.5 --output experiments/results/alpha05
 """
+
 from __future__ import annotations
 
 import argparse
@@ -58,22 +59,36 @@ def main() -> None:
     print(f"Multi-seed benchmark | alpha={cfg_sumo.zipf_alpha} | seeds={args.seeds}")
     print(f"{'='*90}\n")
 
-    class_names = {"trajectory": "TrajectoryCache", "lfu": "LFU", "lru": "LRU", "random": "Random", "fifo": "FIFO"}
-    all_miss_sumo: dict[str, list[float]] = {class_names[name]: [] for name, _ in DEFAULT_POLICIES}
-    all_miss_simpy: dict[str, list[float]] = {class_names[name]: [] for name, _ in DEFAULT_POLICIES}
+    class_names = {
+        "trajectory": "TrajectoryCache",
+        "lfu": "LFU",
+        "lru": "LRU",
+        "random": "Random",
+        "fifo": "FIFO",
+    }
+    all_miss_sumo: dict[str, list[float]] = {
+        class_names[name]: [] for name, _ in DEFAULT_POLICIES
+    }
+    all_miss_simpy: dict[str, list[float]] = {
+        class_names[name]: [] for name, _ in DEFAULT_POLICIES
+    }
 
     for i, seed in enumerate(args.seeds):
         cfg_sumo.seed = seed
         cfg_simpy.seed = seed
         print(f"Seed {i+1}/{len(args.seeds)}: {seed}")
-        
+
         # SUMO
         print("  Running SUMO (platoons)... ", end="", flush=True)
         res_sumo = run_benchmark(config=cfg_sumo, verbose=args.verbose, output_dir=None)
         for name, metrics in res_sumo.items():
             if name in all_miss_sumo:
                 all_miss_sumo[name].append(metrics.miss_rate * 100.0)
-        tc_sumo = res_sumo["TrajectoryCache"].miss_rate * 100.0 if "TrajectoryCache" in res_sumo else 0.0
+        tc_sumo = (
+            res_sumo["TrajectoryCache"].miss_rate * 100.0
+            if "TrajectoryCache" in res_sumo
+            else 0.0
+        )
         print(f"TC={tc_sumo:.2f}%")
 
         # SimPy
@@ -82,11 +97,17 @@ def main() -> None:
         for name, metrics in res_simpy.items():
             if name in all_miss_simpy:
                 all_miss_simpy[name].append(metrics.miss_rate * 100.0)
-        tc_simpy = res_simpy["TrajectoryCache"].miss_rate * 100.0 if "TrajectoryCache" in res_simpy else 0.0
+        tc_simpy = (
+            res_simpy["TrajectoryCache"].miss_rate * 100.0
+            if "TrajectoryCache" in res_simpy
+            else 0.0
+        )
         print(f"TC={tc_simpy:.2f}%")
 
     print(f"\n{'='*90}")
-    print(f"RESULTS: alpha={cfg_sumo.zipf_alpha}  (mean miss rate % over {len(args.seeds)} seeds)")
+    print(
+        f"RESULTS: alpha={cfg_sumo.zipf_alpha}  (mean miss rate % over {len(args.seeds)} seeds)"
+    )
     print(f"{'='*90}")
     print(f"{'Policy':<18} | {'SimPy (Independent)':<20} | {'SUMO (Platoons)':<20}")
     print("-" * 65)
@@ -95,16 +116,18 @@ def main() -> None:
     summary_simpy = {}
     for short_name, _ in DEFAULT_POLICIES:
         name = class_names[short_name]
-        
+
         sim_v = np.array(all_miss_simpy[name])
         sumo_v = np.array(all_miss_sumo[name])
-        
+
         sim_mean, sim_std = float(np.mean(sim_v)), float(np.std(sim_v))
         sumo_mean, sumo_std = float(np.mean(sumo_v)), float(np.std(sumo_v))
-        
+
         display = "TrajectoryCache" if name == "TrajectoryCache" else name.upper()
-        print(f"{display:<18} | {sim_mean:>6.2f} ± {sim_std:<5.2f}       | {sumo_mean:>6.2f} ± {sumo_std:<5.2f}")
-        
+        print(
+            f"{display:<18} | {sim_mean:>6.2f} ± {sim_std:<5.2f}       | {sumo_mean:>6.2f} ± {sumo_std:<5.2f}"
+        )
+
         summary_sumo[name] = {
             "miss_rate_mean": round(sumo_mean, 4),
             "miss_rate_std": round(sumo_std, 4),
@@ -123,12 +146,16 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     fname = out / f"multiseed_alpha{cfg_sumo.zipf_alpha:.1f}.json"
     with open(fname, "w") as f:
-        json.dump({
-            "zipf_alpha": cfg_sumo.zipf_alpha,
-            "seeds": list(args.seeds),
-            "sumo": summary_sumo,
-            "simpy": summary_simpy,
-        }, f, indent=2)
+        json.dump(
+            {
+                "zipf_alpha": cfg_sumo.zipf_alpha,
+                "seeds": list(args.seeds),
+                "sumo": summary_sumo,
+                "simpy": summary_simpy,
+            },
+            f,
+            indent=2,
+        )
     print(f"Saved to {fname}")
 
     # AFTER writing results to disk — validate schema immediately
@@ -145,14 +172,16 @@ def main() -> None:
         for policy in REQUIRED_CONDITION_KEYS:
             assert policy in written[cond], f"JSON missing policy '{policy}' under '{cond}'"
             for k in REQUIRED_POLICY_KEYS:
-                assert k in written[cond][policy], \
-                    f"JSON missing '{k}' for {cond}/{policy}"
-            assert isinstance(written[cond][policy]["per_seed"], list), \
-                f"per_seed must be a list for {cond}/{policy}"
-            assert len(written[cond][policy]["per_seed"]) == N_SEEDS, \
-                f"per_seed length mismatch for {cond}/{policy}: expected {N_SEEDS}"
+                assert k in written[cond][policy], f"JSON missing '{k}' for {cond}/{policy}"
+            assert isinstance(
+                written[cond][policy]["per_seed"], list
+            ), f"per_seed must be a list for {cond}/{policy}"
+            assert (
+                len(written[cond][policy]["per_seed"]) == N_SEEDS
+            ), f"per_seed length mismatch for {cond}/{policy}: expected {N_SEEDS}"
 
     print("[run_multiseed] JSON schema validated OK.")
+
 
 if __name__ == "__main__":
     main()

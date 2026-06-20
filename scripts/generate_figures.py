@@ -9,22 +9,23 @@ Usage:
         --density-input experiments/results/density/density_sweep.json \
         --output experiments/figures/
 """
+
 import argparse
 import json
 import pathlib
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import numpy as np
 
-
 POLICY_COLORS = {
     "TrajectoryCache": "#c46210",  # tcorange
-    "LFU":            "#278c3c",  # tcgreen
-    "LRU":            "#1f61ab",  # tcblue
-    "FIFO":           "#6428a0",  # tcpurple
-    "Random":         "#64646e",  # tcgray
+    "LFU": "#278c3c",  # tcgreen
+    "LRU": "#1f61ab",  # tcblue
+    "FIFO": "#6428a0",  # tcpurple
+    "Random": "#64646e",  # tcgray
 }
 
 SEEDS = list(range(1, 11))
@@ -36,14 +37,22 @@ def load(path: str) -> dict:
 
 
 def fig_perseed(data: dict, out: pathlib.Path):
-    tc  = data["sumo"]["TrajectoryCache"]["per_seed"]
+    tc = data["sumo"]["TrajectoryCache"]["per_seed"]
     lfu = data["sumo"]["LFU"]["per_seed"]
 
     fig, ax = plt.subplots(figsize=(5.5, 3.2))
-    ax.plot(SEEDS, lfu, "o-",  color=POLICY_COLORS["LFU"],
-            label="LFU", linewidth=1.1, markersize=4)
-    ax.plot(SEEDS, tc,  "s-",  color=POLICY_COLORS["TrajectoryCache"],
-            label="TrajectoryCache ($W\\!=\\!0.2$)", linewidth=1.1, markersize=4)
+    ax.plot(
+        SEEDS, lfu, "o-", color=POLICY_COLORS["LFU"], label="LFU", linewidth=1.1, markersize=4
+    )
+    ax.plot(
+        SEEDS,
+        tc,
+        "s-",
+        color=POLICY_COLORS["TrajectoryCache"],
+        label="TrajectoryCache ($W\\!=\\!0.2$)",
+        linewidth=1.1,
+        markersize=4,
+    )
 
     ax.set_xlabel("Seed Index", fontsize=9)
     ax.set_ylabel("Miss Rate (\\%)", fontsize=9)
@@ -63,17 +72,33 @@ def fig_perseed(data: dict, out: pathlib.Path):
 def fig_miss_bar(data: dict, out: pathlib.Path):
     policies = ["LRU", "FIFO", "Random", "LFU", "TrajectoryCache"]
     simpy_means = [data["simpy"][p]["miss_rate_mean"] for p in policies]
-    sumo_means  = [data["sumo"][p]["miss_rate_mean"]  for p in policies]
-    simpy_stds  = [data["simpy"][p]["miss_rate_std"]  for p in policies]
-    sumo_stds   = [data["sumo"][p]["miss_rate_std"]   for p in policies]
+    sumo_means = [data["sumo"][p]["miss_rate_mean"] for p in policies]
+    simpy_stds = [data["simpy"][p]["miss_rate_std"] for p in policies]
+    sumo_stds = [data["sumo"][p]["miss_rate_std"] for p in policies]
 
     x = np.arange(len(policies))
     w = 0.35
     fig, ax = plt.subplots(figsize=(5.5, 3.2))
-    ax.bar(x - w/2, simpy_means, w, yerr=simpy_stds, label="Independent (SimPy)",
-           color="#1f61ab", alpha=0.85, capsize=3)
-    ax.bar(x + w/2, sumo_means,  w, yerr=sumo_stds,  label="Platooning (SUMO-like)",
-           color="#c46210", alpha=0.85, capsize=3)
+    ax.bar(
+        x - w / 2,
+        simpy_means,
+        w,
+        yerr=simpy_stds,
+        label="Independent (SimPy)",
+        color="#1f61ab",
+        alpha=0.85,
+        capsize=3,
+    )
+    ax.bar(
+        x + w / 2,
+        sumo_means,
+        w,
+        yerr=sumo_stds,
+        label="Platooning (SUMO-like)",
+        color="#c46210",
+        alpha=0.85,
+        capsize=3,
+    )
 
     ax.set_xticks(x)
     ax.set_xticklabels(["LRU", "FIFO", "Random", "LFU", "TC"], fontsize=8)
@@ -96,10 +121,25 @@ def fig_wsweep(data: dict, out: pathlib.Path):
     stds = [data["w_sweep"][str(w)]["std"] for w in w_vals]
 
     fig, ax = plt.subplots(figsize=(5.5, 3.2))
-    ax.plot(w_vals, means, "s-", color=POLICY_COLORS["FIFO"], label="TrajectoryCache", linewidth=1.2, markersize=4)
-    
+    ax.plot(
+        w_vals,
+        means,
+        "s-",
+        color=POLICY_COLORS["FIFO"],
+        label="TrajectoryCache",
+        linewidth=1.2,
+        markersize=4,
+    )
+
     # LFU baseline
-    ax.plot([0.05, 0.95], [data["lfu_mean"], data["lfu_mean"]], "--", color=POLICY_COLORS["LFU"], label=f"LFU Baseline ({data['lfu_mean']:.2f}\\%)", linewidth=1.5)
+    ax.plot(
+        [0.05, 0.95],
+        [data["lfu_mean"], data["lfu_mean"]],
+        "--",
+        color=POLICY_COLORS["LFU"],
+        label=f"LFU Baseline ({data['lfu_mean']:.2f}\\%)",
+        linewidth=1.5,
+    )
 
     ax.set_xlabel("Urgency weight $W$", fontsize=9)
     ax.set_ylabel("Mean Cache Miss Rate (\\%)", fontsize=9)
@@ -122,8 +162,24 @@ def fig_density(data: dict, out: pathlib.Path):
     lfu_means = data["lfu_means"]
 
     fig, ax = plt.subplots(figsize=(5.5, 3.2))
-    ax.plot(densities, tc_means, "s-", color=POLICY_COLORS["FIFO"], label="TrajectoryCache ($W\\!=\\!0.2$)", linewidth=1.2, markersize=4)
-    ax.plot(densities, lfu_means, "o-", color=POLICY_COLORS["LFU"], label="LFU", linewidth=1.2, markersize=4)
+    ax.plot(
+        densities,
+        tc_means,
+        "s-",
+        color=POLICY_COLORS["FIFO"],
+        label="TrajectoryCache ($W\\!=\\!0.2$)",
+        linewidth=1.2,
+        markersize=4,
+    )
+    ax.plot(
+        densities,
+        lfu_means,
+        "o-",
+        color=POLICY_COLORS["LFU"],
+        label="LFU",
+        linewidth=1.2,
+        markersize=4,
+    )
 
     ax.set_xlabel("Number of Vehicles $n$", fontsize=9)
     ax.set_ylabel("Mean Cache Miss Rate (\\%)", fontsize=9)
@@ -142,9 +198,13 @@ def fig_density(data: dict, out: pathlib.Path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input",  required=True, help="Path to multiseed JSON")
-    parser.add_argument("--wsweep-input",  default="experiments/results/wsweep/wsweep_results.json")
-    parser.add_argument("--density-input", default="experiments/results/density/density_sweep.json")
+    parser.add_argument("--input", required=True, help="Path to multiseed JSON")
+    parser.add_argument(
+        "--wsweep-input", default="experiments/results/wsweep/wsweep_results.json"
+    )
+    parser.add_argument(
+        "--density-input", default="experiments/results/density/density_sweep.json"
+    )
     parser.add_argument("--output", required=True, help="Output directory for figures")
     args = parser.parse_args()
 

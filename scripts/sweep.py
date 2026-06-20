@@ -10,6 +10,7 @@ Usage
     python scripts/sweep.py
     python scripts/sweep.py --config configs/sweep.yaml --output experiments/results/sweep
 """
+
 from __future__ import annotations
 
 import argparse
@@ -60,9 +61,9 @@ def main() -> None:
         seed=sim_raw.get("seed", 42),
     )
 
-    W_values    = sweep["urgency_weight"]
-    alpha_vals  = sweep["alpha_d"]
-    r_rel_vals  = sweep["r_rel"]
+    W_values = sweep["urgency_weight"]
+    alpha_vals = sweep["alpha_d"]
+    r_rel_vals = sweep["r_rel"]
 
     combinations = list(itertools.product(W_values, alpha_vals, r_rel_vals))
     print(f"Sweeping {len(combinations)} combinations ")

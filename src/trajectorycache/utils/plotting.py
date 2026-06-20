@@ -3,6 +3,7 @@ Plotting helpers for experiment results.
 
 Requires matplotlib (optional dependency); gracefully fails if absent.
 """
+
 from __future__ import annotations
 
 import logging
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__)
 def _check_matplotlib() -> bool:
     try:
         import matplotlib  # noqa: F401
+
         return True
     except ImportError:
         logger.warning("matplotlib not installed - plotting disabled")
@@ -76,7 +78,9 @@ def plot_bar_comparison(
     rates = [hit_rates[p] * 100 for p in policies]
 
     fig, ax = plt.subplots(figsize=(8, 4))
-    bars = ax.bar(policies, rates, color=["#2196F3", "#4CAF50", "#FF9800", "#F44336", "#9C27B0"])
+    bars = ax.bar(
+        policies, rates, color=["#2196F3", "#4CAF50", "#FF9800", "#F44336", "#9C27B0"]
+    )
     ax.bar_label(bars, fmt="%.1f%%", padding=3)
     ax.set_ylabel("Hit Rate (%)")
     ax.set_title(title)

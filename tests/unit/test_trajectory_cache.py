@@ -1,11 +1,11 @@
 """Unit tests for TrajectoryCache."""
+
 from __future__ import annotations
 
 import pytest
 
 from trajectorycache.cache import TrajectoryCache
 from trajectorycache.cache.base import CacheItem
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -105,9 +105,9 @@ def test_force_evict_empty_returns_none():
 
 
 def test_hit_rate_calculation(small_cache):
-    small_cache.request(0, 0.0, 0.0)   # miss
-    small_cache.request(0, 0.0, 1.0)   # hit
-    small_cache.request(0, 0.0, 2.0)   # hit
+    small_cache.request(0, 0.0, 0.0)  # miss
+    small_cache.request(0, 0.0, 1.0)  # hit
+    small_cache.request(0, 0.0, 2.0)  # hit
     assert small_cache.hit_rate == pytest.approx(2 / 3)
     assert small_cache.miss_rate == pytest.approx(1 / 3)
 
@@ -127,8 +127,8 @@ def test_reset_stats(small_cache):
 
 def test_popularity_prune():
     cache = TrajectoryCache(capacity=10, pop_window=10.0)
-    cache.request(0, 100.0, 0.0)   # t=0 - inside window at t=5
-    cache.request(0, 100.0, 5.0)   # t=5 - inside window at t=15? no, 15-10=5  0
+    cache.request(0, 100.0, 0.0)  # t=0 - inside window at t=5
+    cache.request(0, 100.0, 5.0)  # t=5 - inside window at t=15? no, 15-10=5  0
     cache.request(0, 100.0, 20.0)  # prune: t=20, cutoff=10 -> first two pruned
     counts = cache.popularity_counts()
     # Only the t=20 entry survives

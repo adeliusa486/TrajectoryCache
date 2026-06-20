@@ -1,11 +1,11 @@
 """Unit tests for highway simulation and content catalog."""
+
 from __future__ import annotations
 
 import pytest
 
 from trajectorycache.content.catalog import ContentCatalog
 from trajectorycache.simulation.highway import HighwaySimulation, Vehicle
-
 
 # ---------------------------------------------------------------------------
 # Vehicle
@@ -104,7 +104,6 @@ def test_catalog_sample_request():
     assert 0 <= item.item_id < 50
 
 
-
 def test_catalog_generate_requests_count():
     cat = ContentCatalog(n_items=100, seed=0)
     reqs = cat.generate_requests(25)
@@ -122,5 +121,6 @@ def test_catalog_zipf_skewed():
     cat = ContentCatalog(n_items=100, zipf_alpha=2.0, seed=7)
     reqs = cat.generate_requests(10_000)
     from collections import Counter
+
     counts = Counter(r.item_id for r in reqs)
     assert counts[0] > counts[99]

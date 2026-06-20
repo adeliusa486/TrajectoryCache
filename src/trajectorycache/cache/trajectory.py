@@ -7,13 +7,14 @@ Implements the composite scoring function from the paper:
 Where spatial urgency is derived from real-time vehicle kinematics and
 popularity is a sliding-window request count normalized across cache items.
 """
+
 from __future__ import annotations
 
 import logging
 import time
 import threading
 from collections import defaultdict, deque
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple, Any
 
 from .base import BaseCache, CacheItem
 
@@ -86,6 +87,7 @@ class TrajectoryCache(BaseCache):
         current_time: float,
         vehicles: Optional[List[dict]] = None,
         catalog: Optional[Dict[int, float]] = None,
+        **kwargs: Any,
     ) -> bool:
         """
         Process a content request.
@@ -133,8 +135,8 @@ class TrajectoryCache(BaseCache):
         """Force-evict the lowest-scoring cached item (used by tests)."""
         if not self._cache:
             return None
-        scores = self._score_all_cached({}, current_time=time.time())
-        victim = min(scores, key=scores.get)
+        scores = self._score_all_cached([], current_time=time.time())
+        victim = min(scores, key=lambda k: scores[k])
         del self._cache[victim]
         logger.debug("Force-evicted item %d", victim)
         return victim
@@ -175,7 +177,10 @@ class TrajectoryCache(BaseCache):
             self._cache[new_id] = CacheItem(item_id=new_id, location=new_loc, timestamp=t)
             logger.debug(
                 "Evicted item %d (score=%.4f) -> cached item %d (score=%.4f)",
-                victim_id, score_victim, new_id, score_new,
+                victim_id,
+                score_victim,
+                new_id,
+                score_new,
             )
         else:
             # New item is less spatially/historically valuable than all cached items.
@@ -183,9 +188,10 @@ class TrajectoryCache(BaseCache):
             # the cache with items that have no urgency AND low popularity).
             logger.debug(
                 "Discarded new item %d (score=%.4f); victim %d retained",
-                new_id, score_new, victim_id,
+                new_id,
+                score_new,
+                victim_id,
             )
-
 
     def _score_all(
         self,
@@ -204,7 +210,9 @@ class TrajectoryCache(BaseCache):
         served, which would cause TC to always discard new items.
         """
         # --- Spatial urgency ---
-        raw_urgency = {fid: self._raw_urgency(loc, vehicles, t) for fid, loc in catalog.items()}
+        raw_urgency = {
+            fid: self._raw_urgency(loc, vehicles, t) for fid, loc in catalog.items()
+        }
         urgency_norm = self._min_max_normalize(raw_urgency)
 
         # --- Historical popularity (globally normalized) ---
@@ -225,7 +233,7 @@ class TrajectoryCache(BaseCache):
             scores[fid] = self.W * urgency_norm[fid] + (1.0 - self.W) * pop_norm[fid]
         return scores
 
-    def _score_all_cached(self, vehicles: dict, current_time: float = 0.0) -> Dict[int, float]:
+    def _score_all_cached(self, vehicles: List[dict], current_time: float = 0.0) -> Dict[int, float]:
         """Score only items currently in the cache (no new item in C+)."""
         catalog = {fid: item.location for fid, item in self._cache.items()}
         return self._score_all(catalog, vehicles, current_time)
@@ -262,7 +270,7 @@ class TrajectoryCache(BaseCache):
             tte = abs(item_loc - x_v) / speed
             u = 1.0 / (1.0 + self.alpha_d * tte)
             total += u
-            
+
         self._urgency_cache[item_loc] = total
         return total
 
@@ -275,7 +283,6 @@ class TrajectoryCache(BaseCache):
         hi = max(raw.values())
         span = hi - lo + _EPSILON
         return {k: (v - lo) / span for k, v in raw.items()}
-
 
     def _prune_request_window(self, current_time: float) -> None:
         """Remove request timestamps older than pop_window from all queues."""

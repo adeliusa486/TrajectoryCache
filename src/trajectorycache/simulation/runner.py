@@ -1,6 +1,7 @@
 """
 SimulationRunner: orchestrates highway, catalog, and cache in a single loop.
 """
+
 from __future__ import annotations
 
 import logging
@@ -25,14 +26,14 @@ class SimulationConfig:
     dt: float = 1.0
     mean_speed: float = 25.0
     speed_std: float = 5.0
-    platoon_size: int = 10       # vehicles per platoon (SUMO Krauss-like clustering)
-    platoon_gap: float = 30.0   # max positional spread within platoon (metres)
+    platoon_size: int = 10  # vehicles per platoon (SUMO Krauss-like clustering)
+    platoon_gap: float = 30.0  # max positional spread within platoon (metres)
 
     # Content
     n_items: int = 200
     active_zone_length: float = 1600.0
     zipf_alpha: float = 0.8
-    r_rel: float = 800.0        # relevance radius (m): vehicle look-ahead for requests
+    r_rel: float = 800.0  # relevance radius (m): vehicle look-ahead for requests
 
     # Simulation
     n_steps: int = 1_000
@@ -87,6 +88,7 @@ class SimulationRunner:
         if self.cfg.seed is not None:
             import random
             import numpy as np
+
             random.seed(self.cfg.seed)
             np.random.seed(self.cfg.seed)
 

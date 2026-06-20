@@ -6,6 +6,7 @@ Lightweight end-to-end smoke test.
 Validates: imports, config loading, simulation, API startup.
 Writes SMOKE_TEST_REPORT.md to the project root.
 """
+
 from __future__ import annotations
 
 import sys
@@ -26,13 +27,17 @@ def record(name: str, fn):
     try:
         result = fn()
         elapsed = time.perf_counter() - start
-        RESULTS.append({"test": name, "status": "PASS", "elapsed_s": round(elapsed, 3), "detail": ""})
+        RESULTS.append(
+            {"test": name, "status": "PASS", "elapsed_s": round(elapsed, 3), "detail": ""}
+        )
         print(f"  [PASS] {name}  ({elapsed*1000:.1f} ms)")
         return True, result
     except Exception as exc:
         elapsed = time.perf_counter() - start
         tb = traceback.format_exc()
-        RESULTS.append({"test": name, "status": "FAIL", "elapsed_s": round(elapsed, 3), "detail": tb})
+        RESULTS.append(
+            {"test": name, "status": "FAIL", "elapsed_s": round(elapsed, 3), "detail": tb}
+        )
         print(f"  [FAIL] {name}\n     {exc}")
         return False, None
 
@@ -40,14 +45,23 @@ def record(name: str, fn):
 def smoke_imports():
     import trajectorycache  # noqa
     from trajectorycache import (
-        TrajectoryCache, LRUCache, LFUCache, RandomCache, FIFOCache,
-        ContentCatalog, SimulationRunner, SimulationConfig, run_benchmark,
+        TrajectoryCache,
+        LRUCache,
+        LFUCache,
+        RandomCache,
+        FIFOCache,
+        ContentCatalog,
+        SimulationRunner,
+        SimulationConfig,
+        run_benchmark,
     )
+
     return "ok"
 
 
 def smoke_cache_basic():
     from trajectorycache import TrajectoryCache
+
     c = TrajectoryCache(capacity=5, urgency_weight=0.5)
     for i in range(8):
         c.request(i % 5, float(i * 100), float(i))
@@ -58,6 +72,7 @@ def smoke_cache_basic():
 
 def smoke_config_load():
     from trajectorycache.utils.config import load_config
+
     cfg = load_config(ROOT / "configs" / "simulation.yaml")
     assert cfg.n_steps > 0
     return cfg
@@ -65,8 +80,10 @@ def smoke_config_load():
 
 def smoke_simulation_run():
     from trajectorycache import TrajectoryCache, SimulationRunner, SimulationConfig
-    cfg = SimulationConfig(n_steps=50, warmup_steps=10, n_vehicles=10, n_items=30,
-                           cache_capacity=8, seed=0)
+
+    cfg = SimulationConfig(
+        n_steps=50, warmup_steps=10, n_vehicles=10, n_items=30, cache_capacity=8, seed=0
+    )
     cache = TrajectoryCache(capacity=8, urgency_weight=0.4)
     runner = SimulationRunner(cache=cache, config=cfg)
     result = runner.run()
@@ -79,8 +96,10 @@ def smoke_benchmark():
     # Note: This is a functional test only, not a paper result replication.
     from trajectorycache import run_benchmark
     from trajectorycache.simulation.runner import SimulationConfig
-    cfg = SimulationConfig(n_steps=30, warmup_steps=5, n_vehicles=5, n_items=20,
-                           cache_capacity=5, seed=1)
+
+    cfg = SimulationConfig(
+        n_steps=30, warmup_steps=5, n_vehicles=5, n_items=20, cache_capacity=5, seed=1
+    )
     results = run_benchmark(config=cfg, verbose=False)
     assert len(results) >= 5
     return {k: round(v.hit_rate * 100, 2) for k, v in results.items()}
@@ -89,6 +108,7 @@ def smoke_benchmark():
 def smoke_api_startup():
     from fastapi.testclient import TestClient
     from trajectorycache.api.app import app
+
     client = TestClient(app)
     r = client.get("/health")
     assert r.status_code == 200
@@ -99,9 +119,16 @@ def smoke_api_startup():
 def smoke_api_request():
     from fastapi.testclient import TestClient
     from trajectorycache.api.app import app
+
     client = TestClient(app)
     client.post("/cache/reset")
-    payload = {"item_id": 1, "item_location": 500.0, "current_time": 0.0, "vehicles": [], "catalog": {}}
+    payload = {
+        "item_id": 1,
+        "item_location": 500.0,
+        "current_time": 0.0,
+        "vehicles": [],
+        "catalog": {},
+    }
     r1 = client.post("/cache/request", json=payload)
     assert r1.json()["hit"] is False
     r2 = client.post("/cache/request", json={**payload, "current_time": 1.0})
@@ -111,19 +138,20 @@ def smoke_api_request():
 
 # ---------------------------------------------------------------------------
 
+
 def main() -> None:
     print("\n" + "=" * 55)
     print("  TrajectoryCache  -  Smoke Test Suite")
     print("=" * 55 + "\n")
 
     tests = [
-        ("Core imports",           smoke_imports),
-        ("Basic cache operation",  smoke_cache_basic),
-        ("Config loading (YAML)",  smoke_config_load),
-        ("Simulation run",         smoke_simulation_run),
-        ("Full benchmark",         smoke_benchmark),
-        ("API startup",            smoke_api_startup),
-        ("API request cycle",      smoke_api_request),
+        ("Core imports", smoke_imports),
+        ("Basic cache operation", smoke_cache_basic),
+        ("Config loading (YAML)", smoke_config_load),
+        ("Simulation run", smoke_simulation_run),
+        ("Full benchmark", smoke_benchmark),
+        ("API startup", smoke_api_startup),
+        ("API request cycle", smoke_api_request),
     ]
 
     for name, fn in tests:
@@ -157,8 +185,11 @@ def main() -> None:
 
     lines.append("\n## Environment\n")
     lines.append(f"- Python: {sys.version.split()[0]}")
-    lines.append("- All core modules imported successfully" if passed == len(RESULTS)
-                 else "- Some modules failed - see failures above")
+    lines.append(
+        "- All core modules imported successfully"
+        if passed == len(RESULTS)
+        else "- Some modules failed - see failures above"
+    )
 
     report_path.write_text("\n".join(lines), encoding="utf-8")
     print(f"Report written to: {report_path}\n")

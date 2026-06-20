@@ -3,6 +3,7 @@ from trajectorycache.simulation.runner import SimulationRunner, SimulationConfig
 from trajectorycache.cache.baselines import LFUCache, RandomCache
 from trajectorycache.cache.trajectory import TrajectoryCache
 
+
 def test_determinism_trajectory_cache():
     cfg1 = SimulationConfig(n_steps=100, n_vehicles=50, n_items=50, seed=42)
     cache1 = TrajectoryCache(capacity=10)
@@ -15,6 +16,7 @@ def test_determinism_trajectory_cache():
     assert res1.hit_rate == res2.hit_rate
     assert res1.hits == res2.hits
     assert res1.misses == res2.misses
+
 
 def test_determinism_random_cache():
     # Test that random policy is also deterministic if seed is set

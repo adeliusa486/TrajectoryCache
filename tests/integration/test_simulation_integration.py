@@ -1,4 +1,5 @@
 """Integration tests: end-to-end simulation and benchmark runs."""
+
 from __future__ import annotations
 
 import json
@@ -9,7 +10,6 @@ import pytest
 from trajectorycache import TrajectoryCache, build_cache, run_benchmark
 from trajectorycache.evaluation.metrics import compute_metrics, save_results
 from trajectorycache.simulation.runner import SimulationConfig, SimulationRunner
-
 
 # ---------------------------------------------------------------------------
 # Single-policy simulation

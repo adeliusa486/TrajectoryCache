@@ -1,4 +1,5 @@
 """LFU, Random, and FIFO eviction baseline caches."""
+
 from __future__ import annotations
 
 from collections import defaultdict, deque

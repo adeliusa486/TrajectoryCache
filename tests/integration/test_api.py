@@ -1,4 +1,5 @@
 """Integration tests for the FastAPI REST interface."""
+
 from __future__ import annotations
 
 import pytest
@@ -84,9 +85,9 @@ def test_cache_request_miss_then_hit():
 
 
 def test_cache_reset():
-    client.post("/cache/request", json={
-        "item_id": 1, "item_location": 0.0, "current_time": 0.0
-    })
+    client.post(
+        "/cache/request", json={"item_id": 1, "item_location": 0.0, "current_time": 0.0}
+    )
     r = client.post("/cache/reset")
     assert r.status_code == 200
     status = client.get("/cache/status").json()
@@ -114,9 +115,10 @@ def test_simulation_run():
 
 
 def test_simulation_results_after_run():
-    client.post("/simulation/run", json={
-        "n_steps": 20, "n_vehicles": 5, "cache_capacity": 5, "n_items": 20
-    })
+    client.post(
+        "/simulation/run",
+        json={"n_steps": 20, "n_vehicles": 5, "cache_capacity": 5, "n_items": 20},
+    )
     r = client.get("/simulation/results")
     assert r.status_code == 200
     assert "results" in r.json()

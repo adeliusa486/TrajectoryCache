@@ -11,6 +11,7 @@ Usage
     python scripts/run_wsweep.py
     python scripts/run_wsweep.py --seeds 42 7 13 --output experiments/results
 """
+
 from __future__ import annotations
 
 import argparse
@@ -46,11 +47,11 @@ def main() -> None:
 
     cfg = load_config(args.config)
     cfg.platoon_size = 10  # Enforce platooning condition to match run_multiseed
-    
+
     print(f"\nW-sweep | alpha={cfg.zipf_alpha} | seeds={args.seeds}")
     print(f"W values: {args.w_values}\n")
 
-    results_tc:  dict[float, list[float]] = {w: [] for w in args.w_values}
+    results_tc: dict[float, list[float]] = {w: [] for w in args.w_values}
     results_lfu: list[float] = []
 
     for seed in args.seeds:
@@ -70,14 +71,16 @@ def main() -> None:
                 output_dir=None,
             )
             results_tc[w].append(res["TrajectoryCache"].miss_rate * 100.0)
-            print(f"  seed={seed}  W={w:.1f}  TC={results_tc[w][-1]:.2f}%  "
-                  f"LFU={results_lfu[-1]:.2f}%")
+            print(
+                f"  seed={seed}  W={w:.1f}  TC={results_tc[w][-1]:.2f}%  "
+                f"LFU={results_lfu[-1]:.2f}%"
+            )
 
     # Summary table
     print(f"\n{'W':>6}  {'TC mean%':>10}  {'TC std%':>8}  {'LFU mean%':>10}")
     print("-" * 44)
     lfu_mean = float(np.mean(results_lfu))
-    lfu_std  = float(np.std(results_lfu))
+    lfu_std = float(np.std(results_lfu))
 
     sweep_data = {"lfu_mean": round(lfu_mean, 4), "lfu_std": round(lfu_std, 4), "w_sweep": {}}
     for w in args.w_values:

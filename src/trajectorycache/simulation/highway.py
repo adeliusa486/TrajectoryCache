@@ -5,6 +5,7 @@ Models a one-dimensional highway segment with vehicles moving at
 configurable speeds. Generates vehicle state snapshots used by
 TrajectoryCache to compute spatial urgency.
 """
+
 from __future__ import annotations
 
 import logging
@@ -22,9 +23,9 @@ class Vehicle:
     """Single vehicle on the highway."""
 
     vehicle_id: int
-    x: float             # Position along highway (metres)
-    speed: float         # Speed (m/s)
-    direction: int       # +1 = forward, -1 = backward
+    x: float  # Position along highway (metres)
+    speed: float  # Speed (m/s)
+    direction: int  # +1 = forward, -1 = backward
     lane: int = 0
 
     def step(self, dt: float) -> None:

@@ -1,4 +1,5 @@
 """Abstract base class for all cache replacement policies."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -11,8 +12,8 @@ class CacheItem:
     """Lightweight wrapper holding per-item cache metadata."""
 
     item_id: int
-    location: float       # Geographic position along highway (metres)
-    timestamp: float      # Simulation time when item was last inserted/accessed
+    location: float  # Geographic position along highway (metres)
+    timestamp: float  # Simulation time when item was last inserted/accessed
     access_count: int = 0  # Cumulative access count since insertion
 
 

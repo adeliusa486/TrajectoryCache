@@ -1,6 +1,7 @@
 """
 Benchmark: run all cache policies under identical conditions and compare.
 """
+
 from __future__ import annotations
 
 import logging
@@ -9,17 +10,23 @@ from typing import Dict, List, Optional
 
 from ..cache import build_cache
 from ..simulation.runner import SimulationConfig, SimulationResult, SimulationRunner
-from .metrics import EvalMetrics, compare_policies, compute_metrics, print_comparison_table, save_results
+from .metrics import (
+    EvalMetrics,
+    compare_policies,
+    compute_metrics,
+    print_comparison_table,
+    save_results,
+)
 
 logger = logging.getLogger(__name__)
 
 # Default policies to benchmark (parameters match configs/simulation.yaml)
 DEFAULT_POLICIES = [
     ("trajectory", {"urgency_weight": 0.2}),
-    ("lfu",        {"pop_window": 300.0}),
-    ("lru",        {}),
-    ("random",     {}),
-    ("fifo",       {}),
+    ("lfu", {"pop_window": 300.0}),
+    ("lru", {}),
+    ("random", {}),
+    ("fifo", {}),
 ]
 
 

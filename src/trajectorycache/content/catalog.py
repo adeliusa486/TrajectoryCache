@@ -5,6 +5,7 @@ Content items are geo-tagged (have a fixed location on the highway),
 and requests follow a Zipf popularity distribution - a standard
 assumption in caching literature.
 """
+
 from __future__ import annotations
 
 import logging
@@ -21,7 +22,7 @@ class ContentItem:
     """A single piece of geo-tagged content."""
 
     item_id: int
-    location: float    # Position on highway (metres)
+    location: float  # Position on highway (metres)
     size_mb: float = 1.0
     category: str = "generic"
 
@@ -72,7 +73,7 @@ class ContentCatalog:
 
     def _build_zipf_weights(self) -> np.ndarray:
         ranks = np.arange(1, self.n_items + 1, dtype=float)
-        weights = 1.0 / (ranks ** self.zipf_alpha)
+        weights = 1.0 / (ranks**self.zipf_alpha)
         return weights / weights.sum()
 
     # ------------------------------------------------------------------
@@ -130,9 +131,7 @@ class ContentCatalog:
 
     def generate_requests(self, n_requests: int) -> List["ContentItem"]:
         """Generate n_requests items drawn from Zipf popularity (legacy API)."""
-        indices = self._rng.choice(
-            self.n_items, size=n_requests, p=self._popularity_weights
-        )
+        indices = self._rng.choice(self.n_items, size=n_requests, p=self._popularity_weights)
         return [self._items[int(i)] for i in indices]
 
     def item(self, item_id: int) -> ContentItem:

@@ -4,6 +4,7 @@ Configuration loading and validation.
 Supports both YAML file loading and dict-based construction.
 All config keys map to SimulationConfig fields.
 """
+
 from __future__ import annotations
 
 import logging
@@ -58,6 +59,7 @@ def save_config(cfg: SimulationConfig, path: Path) -> None:
     """Persist a SimulationConfig to YAML."""
     path.parent.mkdir(parents=True, exist_ok=True)
     import dataclasses
+
     data = dataclasses.asdict(cfg)
     with open(path, "w") as fh:
         yaml.dump(data, fh, default_flow_style=False)

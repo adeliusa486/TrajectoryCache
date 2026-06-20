@@ -10,6 +10,7 @@ POST /cache/reset             - clear cache + stats
 POST /simulation/run          - run a full benchmark
 GET  /simulation/results      - retrieve last benchmark results
 """
+
 from __future__ import annotations
 
 import logging
@@ -166,5 +167,7 @@ def run_simulation(body: BenchmarkBody) -> dict:
 @app.get("/simulation/results", tags=["Simulation"])
 def get_results() -> dict:
     if _last_results is None:
-        raise HTTPException(status_code=404, detail="No results yet. POST /simulation/run first.")
+        raise HTTPException(
+            status_code=404, detail="No results yet. POST /simulation/run first."
+        )
     return {"results": _last_results}

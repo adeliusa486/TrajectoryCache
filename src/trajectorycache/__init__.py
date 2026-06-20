@@ -10,6 +10,7 @@ Quick start
 >>> result = runner.run()
 >>> print(result.hit_rate)
 """
+
 __version__ = "0.1.0"
 
 from .cache import (

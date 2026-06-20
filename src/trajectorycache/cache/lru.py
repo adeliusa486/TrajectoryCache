@@ -1,4 +1,5 @@
 """Least-Recently-Used (LRU) cache baseline."""
+
 from __future__ import annotations
 
 from collections import OrderedDict
