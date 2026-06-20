@@ -51,8 +51,8 @@ TrajectoryCache requires Python 3.10 or higher.
 To install the core library and its runtime dependencies:
 
 ```bash
-git clone https://github.com/adeliusa486/Balancing-Spatial-Urgency-and-Content-Popularity-for-Edge-Caching-in-Vehicular-Networks.git
-cd Balancing-Spatial-Urgency-and-Content-Popularity-for-Edge-Caching-in-Vehicular-Networks
+git clone https://github.com/adeliusa486/TrajectoryCache.git
+cd TrajectoryCache
 python -m venv .venv
 
 # Activate the virtual environment
