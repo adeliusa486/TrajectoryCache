@@ -196,6 +196,27 @@ The `SimulationRunner` explicitly controls Python's `random` module and NumPy's 
 
 ---
 
+## Repository Structure
+
+```text
+TrajectoryCache/
+├── src/trajectorycache/
+│   ├── api/             # FastAPI endpoints and schemas
+│   ├── cache/           # Core heuristic (trajectory.py) & baselines
+│   ├── content/         # Zipf catalog generation
+│   ├── evaluation/      # Benchmark orchestration
+│   └── simulation/      # Highway kinematics (platoon vs independent)
+├── scripts/             # CLI runners (e.g., compute_stats.py)
+├── experiments/
+│   ├── results/         # Committed, reproducible JSON outputs
+│   └── figures/         # Auto-generated PDF plots
+├── configs/             # YAML configuration files
+├── tests/               # Unit, integration, and determinism tests
+└── paper/               # Final Elsevier LaTeX source and compiled PDF
+```
+
+---
+
 ## Citation
 
 If you utilize TrajectoryCache or its simulation framework in your research, please cite our work:
