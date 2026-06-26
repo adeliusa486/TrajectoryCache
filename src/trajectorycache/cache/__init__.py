@@ -1,6 +1,7 @@
 """Cache replacement policy implementations."""
 
 from .base import BaseCache, CacheItem
+from .adaptive import AdaptiveTrajectoryCache
 from .baselines import FIFOCache, LFUCache, ProximityCache, RandomCache
 from .lru import LRUCache
 from .trajectory import TrajectoryCache
@@ -9,6 +10,7 @@ __all__ = [
     "BaseCache",
     "CacheItem",
     "TrajectoryCache",
+    "AdaptiveTrajectoryCache",
     "LRUCache",
     "LFUCache",
     "RandomCache",
@@ -18,6 +20,7 @@ __all__ = [
 
 REGISTRY: dict[str, type[BaseCache]] = {
     "trajectory": TrajectoryCache,
+    "adaptive": AdaptiveTrajectoryCache,
     "lru": LRUCache,
     "lfu": LFUCache,
     "random": RandomCache,
