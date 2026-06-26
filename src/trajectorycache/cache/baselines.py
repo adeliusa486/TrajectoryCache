@@ -103,6 +103,80 @@ class RandomCache(BaseCache):
         return False
 
 
+class ProximityCache(BaseCache):
+    """
+    Pure trajectory/proximity-aware eviction policy -- NO popularity term.
+
+    Represents the family of distance/ETA-greedy mobility-aware caching
+    schemes in the vehicular edge-caching literature: it evicts the cached
+    item with the largest current minimum time-to-encounter (TTE) to any
+    vehicle predicted to reach it within the lookahead horizon. Items with
+    no approaching vehicle are evicted first (TTE = +inf). This is the
+    natural counterpart to LFU's "popularity alone" extreme of
+    TrajectoryCache's W=0/W=1 spectrum, used to test whether spatial
+    urgency alone (without the popularity blend) is sufficient.
+    """
+
+    name: str = "Proximity"
+
+    def __init__(self, capacity: int, t_pred: float = 30.0, r_rel: float = 800.0) -> None:
+        super().__init__(capacity)
+        self.t_pred = t_pred
+        self.r_rel = r_rel
+
+    def request(
+        self,
+        item_id: int,
+        item_location: float,
+        current_time: float,
+        vehicles: list | None = None,
+        catalog: dict | None = None,
+        **kwargs,
+    ) -> bool:
+        vehicles = vehicles or []
+        catalog = catalog or {}
+
+        if item_id in self._cache:
+            self._hits += 1
+            return True
+
+        self._misses += 1
+
+        if len(self._cache) >= self.capacity:
+            tte_new = self._min_tte(item_location, vehicles)
+            tte_cached = {
+                fid: self._min_tte(catalog.get(fid, self._cache[fid].location), vehicles)
+                for fid in self._cache
+            }
+            victim_id = max(tte_cached, key=tte_cached.get)
+            if tte_cached[victim_id] > tte_new:
+                del self._cache[victim_id]
+            else:
+                # New item is less urgent than every cached item -- discard it.
+                return False
+
+        self._cache[item_id] = CacheItem(
+            item_id=item_id, location=item_location, timestamp=current_time
+        )
+        return False
+
+    def _min_tte(self, loc: float, vehicles: list) -> float:
+        best = float("inf")
+        for veh in vehicles:
+            x_v = veh["x"]
+            speed = veh.get("speed", 0.0)
+            direction = veh.get("direction", 1.0)
+            if speed <= 0:
+                continue
+            x_hat = x_v + speed * direction * self.t_pred
+            if abs(x_hat - loc) > self.r_rel:
+                continue
+            tte = abs(loc - x_v) / speed
+            if tte < best:
+                best = tte
+        return best
+
+
 class FIFOCache(BaseCache):
     """First-In-First-Out eviction policy."""
 

@@ -42,6 +42,14 @@ class SimulationConfig:
     # Cache
     cache_capacity: int = 20
 
+    # GNSS/V2X telemetry sensitivity (paper limitation: the model otherwise
+    # assumes perfectly accurate, instantaneous vehicle position/speed).
+    # These perturb only the vehicle state *handed to the cache* for
+    # urgency/TTE computation -- ground-truth kinematics and the demand
+    # stream are unaffected.
+    pos_noise_std: float = 0.0  # Gaussian positioning error (metres)
+    update_lag_steps: int = 0  # Stale telemetry age (simulation steps)
+
 
 @dataclass
 class SimulationResult:
@@ -92,6 +100,11 @@ class SimulationRunner:
             random.seed(self.cfg.seed)
             np.random.seed(self.cfg.seed)
 
+        import numpy as np
+
+        self._noise_rng = np.random.default_rng((self.cfg.seed or 0) + 777)
+        self._vehicle_history: list[list[dict]] = []
+
         self.highway = HighwaySimulation(
             road_length=self.cfg.road_length,
             n_vehicles=self.cfg.n_vehicles,
@@ -112,9 +125,35 @@ class SimulationRunner:
 
     # ------------------------------------------------------------------
 
+    def _sensed_vehicle_state(self, step: int, true_vehicles: list[dict]) -> list[dict]:
+        """
+        Return the vehicle-state list the CACHE observes for urgency/TTE
+        computation: true kinematics from `update_lag_steps` steps ago
+        (stale V2X/GNSS telemetry), with Gaussian positioning error added
+        on top. Demand generation always uses `true_vehicles` directly and
+        is unaffected by this method.
+        """
+        if self.cfg.update_lag_steps <= 0 and self.cfg.pos_noise_std <= 0:
+            return true_vehicles
+
+        lag = self.cfg.update_lag_steps
+        idx = max(0, step - lag)
+        source = self._vehicle_history[idx] if self._vehicle_history else true_vehicles
+
+        if self.cfg.pos_noise_std <= 0:
+            return source
+
+        noisy = []
+        for veh in source:
+            v = dict(veh)
+            v["x"] = float(v["x"] + self._noise_rng.normal(0, self.cfg.pos_noise_std))
+            noisy.append(v)
+        return noisy
+
     def run(self, verbose: bool = False) -> SimulationResult:
         """Execute the full simulation and return aggregated results."""
         self.cache.clear()
+        self._vehicle_history = []
         location_map = self.catalog.location_map()
         per_step_hit_rate: list[float] = []
         wall_start = time.perf_counter()
@@ -125,6 +164,7 @@ class SimulationRunner:
             # Advance highway
             vehicles = self.highway.step()
             t = self.highway.current_time
+            self._vehicle_history.append(vehicles)
 
             # Reset stats after warm-up
             if step == self.cfg.warmup_steps:
@@ -135,10 +175,14 @@ class SimulationRunner:
             # nearest spatially relevant item, weighted by Zipf popularity.
             # This spatial coupling is the core assumption of the paper:
             # vehicles request content that is physically ahead of them.
+            # Demand always uses TRUE kinematics -- noise/lag below only
+            # affects what the cache observes, not physical reality.
             requests = self.catalog.generate_vehicle_requests(
                 vehicles=vehicles,
                 r_request=self.cfg.r_rel,
             )
+
+            sensed_vehicles = self._sensed_vehicle_state(step, vehicles)
 
             n_requests = max(len(requests), 1)  # avoid division by zero
             step_hits = 0
@@ -147,7 +191,7 @@ class SimulationRunner:
                     item_id=item.item_id,
                     item_location=item.location,
                     current_time=t,
-                    vehicles=vehicles,
+                    vehicles=sensed_vehicles,
                     catalog=location_map,
                 )
                 if hit:

@@ -1,0 +1,108 @@
+{
+  "experiment_1_baseline_comparison": {
+    "LRU": {
+      "mean": 66.29854,
+      "std": 1.74515180268079
+    },
+    "FIFO": {
+      "mean": 68.81030000000001,
+      "std": 1.490875448855469
+    },
+    "Random": {
+      "mean": 68.46348,
+      "std": 1.805875210971124
+    },
+    "LFU": {
+      "mean": 53.3994,
+      "std": 1.4972601844702882
+    },
+    "Proximity": {
+      "mean": 77.9171,
+      "std": 1.2268200894996808
+    },
+    "TC (W=0.2)": {
+      "mean": 52.54176,
+      "std": 1.4303012516249831
+    }
+  },
+  "experiment_2_gnss_sensitivity": {
+    "LFU_reference": {
+      "mean": 53.3994,
+      "std": 1.4972601844702882
+    },
+    "clean": {
+      "mean": 52.54176,
+      "std": 1.4303012516249831,
+      "noise_std_m": 0.0,
+      "lag_steps": 0,
+      "margin_vs_lfu_pp": -0.8576400000000035
+    },
+    "noise_2m": {
+      "mean": 52.499019999999994,
+      "std": 1.4406770733235132,
+      "noise_std_m": 2.0,
+      "lag_steps": 0,
+      "margin_vs_lfu_pp": -0.9003800000000055
+    },
+    "noise_5m": {
+      "mean": 52.49676000000001,
+      "std": 1.4501796365967905,
+      "noise_std_m": 5.0,
+      "lag_steps": 0,
+      "margin_vs_lfu_pp": -0.902639999999991
+    },
+    "noise_10m": {
+      "mean": 52.482659999999996,
+      "std": 1.405519248676447,
+      "noise_std_m": 10.0,
+      "lag_steps": 0,
+      "margin_vs_lfu_pp": -0.9167400000000043
+    },
+    "noise_15m": {
+      "mean": 52.450660000000006,
+      "std": 1.4044338839546728,
+      "noise_std_m": 15.0,
+      "lag_steps": 0,
+      "margin_vs_lfu_pp": -0.9487399999999937
+    },
+    "lag_1step": {
+      "mean": 52.69802,
+      "std": 1.345185638341413,
+      "noise_std_m": 0.0,
+      "lag_steps": 1,
+      "margin_vs_lfu_pp": -0.7013800000000003
+    },
+    "lag_3step": {
+      "mean": 53.02368,
+      "std": 1.3814112268256702,
+      "noise_std_m": 0.0,
+      "lag_steps": 3,
+      "margin_vs_lfu_pp": -0.37572000000000116
+    },
+    "noise_5m_lag_1": {
+      "mean": 52.70196,
+      "std": 1.3955692008639387,
+      "noise_std_m": 5.0,
+      "lag_steps": 1,
+      "margin_vs_lfu_pp": -0.6974400000000003
+    },
+    "noise_15m_lag_3": {
+      "mean": 53.03700000000001,
+      "std": 1.3651365675272207,
+      "noise_std_m": 15.0,
+      "lag_steps": 3,
+      "margin_vs_lfu_pp": -0.36239999999998673
+    }
+  },
+  "_meta": {
+    "seeds": [
+      84810,
+      15592,
+      4278,
+      98196,
+      37048
+    ],
+    "elapsed_s": 300.36893486976624,
+    "config_path": "./configs\\simulation.yaml"
+  }
+}
