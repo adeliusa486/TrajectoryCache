@@ -36,7 +36,8 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="W-sweep for TrajectoryCache")
     p.add_argument("--config", type=Path, default=Path("configs/simulation.yaml"))
     p.add_argument("--output", type=Path, default=Path("experiments/results/wsweep"))
-    p.add_argument("--seeds", type=int, nargs="+", default=PAPER_SEEDS)
+    # Paper Table 5 (ablation) uses the first 5 of the 10 seeds.
+    p.add_argument("--seeds", type=int, nargs="+", default=PAPER_SEEDS[:5])
     p.add_argument("--w-values", type=float, nargs="+", default=W_VALUES)
     return p.parse_args()
 

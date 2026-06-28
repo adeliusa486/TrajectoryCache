@@ -28,7 +28,8 @@ def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--config", type=Path, default=Path("configs/simulation.yaml"))
     p.add_argument("--output", type=Path, default=Path("experiments/results/density"))
-    p.add_argument("--seeds", type=int, nargs="+", default=PAPER_SEEDS)
+    # Paper Table 6 (density sweep) uses the first 5 of the 10 seeds.
+    p.add_argument("--seeds", type=int, nargs="+", default=PAPER_SEEDS[:5])
     return p.parse_args()
 
 
