@@ -527,11 +527,12 @@
 	
 	\hlcrit{CRITICAL METHODOLOGICAL RIGOR: All comparative numbers reported below are derived strictly from 10 independent random seeds under non-overlapping evaluation windows without any synthetic extrapolation or data smoothing.}
 	
-	\begin{table}[t]
+	\begin{table}[htbp]
 		\centering
 		\caption{Extended Comparative Evaluation Across Rule-Based and Learning-Based Policy Families ($\alpha = 0.8$, 10 Seeds).}
 		\label{tab:comparative_family}
 		\small
+		\resizebox{\linewidth}{!}{%
 		\begin{tabular}{l c c c}
 			\toprule
 			\textbf{Policy / Family} & \textbf{Miss Rate (\%)} & \textbf{Std. Dev.} & \textbf{vs. LFU (pp)} \\
@@ -544,7 +545,8 @@
 			QLearningCache (Learning-Based TD) & 53.42\% & 1.48\% & $+0.02$ \\
 			\textbf{TrajectoryCache (Hybrid Rule-Based)} & \textbf{52.54\%} & \textbf{1.43\%} & \textbf{$-0.86$} \\
 			\bottomrule
-		\end{tabular}
+		\end{tabular}%
+		}
 	\end{table}
 	
 	\begin{hlblock}
@@ -557,11 +559,12 @@
 	Real-world vehicular edge networks experience GNSS positioning inaccuracies and V2X telemetry update delays. To evaluate robustness under uncertainty, we perturb vehicle positioning reports delivered to the RSU with additive Gaussian spatial noise between 0 and 15 meters and discrete telemetry lag between 1 and 3 simulation time steps.
 	\end{hlblock}
 	
-	\begin{table}[t]
+	\begin{table}[htbp]
 		\centering
 		\caption{Sensitivity of Rule-Based vs. Learning-Based Caching Under GNSS/V2X Telemetry Noise and Update Lag.}
 		\label{tab:gnss_sensitivity}
 		\small
+		\resizebox{\linewidth}{!}{%
 		\begin{tabular}{l c c c}
 			\toprule
 			\textbf{Telemetry Condition} & \textbf{TC Miss Rate} & \textbf{QLearning Miss Rate} & \textbf{LFU Reference} \\
@@ -573,7 +576,8 @@
 			Telemetry Lag $\Delta = 3$~steps ($3$~s) & $53.02 \pm 1.38$\% & $53.84 \pm 1.42$\% & $53.40 \pm 1.50$\% \\
 			Combined ($\sigma=15$~m, lag=$3$~s) & $53.04 \pm 1.37$\% & $53.89 \pm 1.44$\% & $53.40 \pm 1.50$\% \\
 			\bottomrule
-		\end{tabular}
+		\end{tabular}%
+		}
 	\end{table}
 	
 	\begin{hlblock}
