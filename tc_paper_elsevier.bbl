@@ -1,0 +1,239 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{zhang2020mobile}
+J.~Zhang, K.~B. Letaief, Mobile edge intelligence and computing for the
+  {Internet of Vehicles}, Proceedings of the IEEE 108~(2) (2020) 246--261.
+\newblock \href {https://doi.org/10.1109/JPROC.2019.2947490}
+  {\path{doi:10.1109/JPROC.2019.2947490}}.
+
+\bibitem{taleb2017multi}
+T.~Taleb, K.~Samdanis, B.~Mada, H.~Flinck, S.~Dutta, D.~Sabella, On
+  multi-access edge computing: {A} survey of the emerging {5G} network edge
+  cloud architecture and orchestration, IEEE Communications Surveys \&
+  Tutorials 19~(3) (2017) 1657--1681.
+\newblock \href {https://doi.org/10.1109/COMST.2017.2705720}
+  {\path{doi:10.1109/COMST.2017.2705720}}.
+
+\bibitem{Cao_2020}
+K.~Cao, Y.~Liu, G.~Meng, Q.~Sun,
+  \href{http://dx.doi.org/10.1109/access.2020.2991734}{An overview on edge
+  computing research}, IEEE Access 8 (2020) 85714–85728.
+\newblock \href {https://doi.org/10.1109/access.2020.2991734}
+  {\path{doi:10.1109/access.2020.2991734}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/access.2020.2991734}
+
+\bibitem{Yousefpour_2019}
+A.~Yousefpour, C.~Fung, T.~Nguyen, K.~Kadiyala, F.~Jalali, A.~Niakanlahiji,
+  J.~Kong, J.~P. Jue, \href{http://dx.doi.org/10.1016/j.sysarc.2019.02.009}{All
+  one needs to know about fog computing and related edge computing paradigms: A
+  complete survey}, Journal of Systems Architecture 98 (2019) 289–330.
+\newblock \href {https://doi.org/10.1016/j.sysarc.2019.02.009}
+  {\path{doi:10.1016/j.sysarc.2019.02.009}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1016/j.sysarc.2019.02.009}
+
+\bibitem{Khan_2019}
+W.~Z. Khan, E.~Ahmed, S.~Hakak, I.~Yaqoob, A.~Ahmed,
+  \href{http://dx.doi.org/10.1016/j.future.2019.02.050}{Edge computing: A
+  survey}, Future Generation Computer Systems 97 (2019) 219–235.
+\newblock \href {https://doi.org/10.1016/j.future.2019.02.050}
+  {\path{doi:10.1016/j.future.2019.02.050}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1016/j.future.2019.02.050}
+
+\bibitem{pham2020survey}
+Q.-V. Pham, F.~Fang, V.~N. Ha, M.~J. Piran, M.~Le, L.~B. Le, W.-J. Hwang,
+  Z.~Ding, A survey of multi-access edge computing in 5g and beyond:
+  Fundamentals, technology integration, and state-of-the-art, IEEE Access 8
+  (2020) 116974--117017.
+\newblock \href {https://doi.org/10.1109/access.2020.3001277}
+  {\path{doi:10.1109/access.2020.3001277}}.
+
+\bibitem{bastug2014living}
+E.~Bastug, M.~Bennis, M.~Debbah, Living on the edge: The role of proactive
+  caching in 5g wireless networks, IEEE Communications Magazine 52~(8) (2014)
+  82--89.
+\newblock \href {https://doi.org/10.1109/MCOM.2014.6871674}
+  {\path{doi:10.1109/MCOM.2014.6871674}}.
+
+\bibitem{golrezaei2012femtocaching}
+N.~Golrezaei, K.~Shanmugam, A.~G. Dimakis, A.~F. Molisch, G.~Caire,
+  Femtocaching: Wireless video content delivery through distributed caching
+  helpers, in: 2012 Proceedings IEEE INFOCOM, IEEE, 2012, pp. 1107--1115.
+\newblock \href {https://doi.org/10.1109/INFCOM.2012.6195469}
+  {\path{doi:10.1109/INFCOM.2012.6195469}}.
+
+\bibitem{Liu_2020a}
+L.~Liu, C.~Chen, Q.~Pei, S.~Maharjan, Y.~Zhang,
+  \href{http://dx.doi.org/10.1007/s11036-020-01624-1}{Vehicular edge computing
+  and networking: A survey}, Mobile Networks and Applications 26~(3) (2020)
+  1145–1168.
+\newblock \href {https://doi.org/10.1007/s11036-020-01624-1}
+  {\path{doi:10.1007/s11036-020-01624-1}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1007/s11036-020-01624-1}
+
+\bibitem{Zhao_2019}
+J.~Zhao, Q.~Li, Y.~Gong, K.~Zhang,
+  \href{http://dx.doi.org/10.1109/tvt.2019.2917890}{Computation offloading and
+  resource allocation for cloud assisted mobile edge computing in vehicular
+  networks}, IEEE Transactions on Vehicular Technology 68~(8) (2019)
+  7944–7956.
+\newblock \href {https://doi.org/10.1109/tvt.2019.2917890}
+  {\path{doi:10.1109/tvt.2019.2917890}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/tvt.2019.2917890}
+
+\bibitem{he2018mobility}
+Y.~He, N.~Zhao, H.~Yin, Integrated networking, caching, and computing for
+  connected vehicles: {A} deep reinforcement learning approach, IEEE
+  Transactions on Vehicular Technology 67~(1) (2018) 44--55.
+\newblock \href {https://doi.org/10.1109/TVT.2017.2760281}
+  {\path{doi:10.1109/TVT.2017.2760281}}.
+
+\bibitem{Peng_2021}
+H.~Peng, X.~Shen,
+  \href{http://dx.doi.org/10.1109/jsac.2020.3036962}{Multi-agent reinforcement
+  learning based resource management in mec- and uav-assisted vehicular
+  networks}, IEEE Journal on Selected Areas in Communications 39~(1) (2021)
+  131–141.
+\newblock \href {https://doi.org/10.1109/jsac.2020.3036962}
+  {\path{doi:10.1109/jsac.2020.3036962}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/jsac.2020.3036962}
+
+\bibitem{Liang_2019}
+L.~Liang, H.~Ye, G.~Y. Li,
+  \href{http://dx.doi.org/10.1109/jsac.2019.2933962}{Spectrum sharing in
+  vehicular networks based on multi-agent reinforcement learning}, IEEE Journal
+  on Selected Areas in Communications 37~(10) (2019) 2282–2292.
+\newblock \href {https://doi.org/10.1109/jsac.2019.2933962}
+  {\path{doi:10.1109/jsac.2019.2933962}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/jsac.2019.2933962}
+
+\bibitem{Wang_2020}
+X.~Wang, Y.~Han, V.~C.~M. Leung, D.~Niyato, X.~Yan, X.~Chen,
+  \href{http://dx.doi.org/10.1109/comst.2020.2970550}{Convergence of edge
+  computing and deep learning: A comprehensive survey}, IEEE Communications
+  Surveys \& Tutorials 22~(2) (2020) 869–904.
+\newblock \href {https://doi.org/10.1109/comst.2020.2970550}
+  {\path{doi:10.1109/comst.2020.2970550}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/comst.2020.2970550}
+
+\bibitem{Zhou_2019}
+Z.~Zhou, X.~Chen, E.~Li, L.~Zeng, K.~Luo, J.~Zhang,
+  \href{http://dx.doi.org/10.1109/jproc.2019.2918951}{Edge intelligence: Paving
+  the last mile of artificial intelligence with edge computing}, Proceedings of
+  the IEEE 107~(8) (2019) 1738–1762.
+\newblock \href {https://doi.org/10.1109/jproc.2019.2918951}
+  {\path{doi:10.1109/jproc.2019.2918951}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/jproc.2019.2918951}
+
+\bibitem{Chen_2019}
+J.~Chen, X.~Ran, \href{http://dx.doi.org/10.1109/jproc.2019.2921977}{Deep
+  learning with edge computing: A review}, Proceedings of the IEEE 107~(8)
+  (2019) 1655–1674.
+\newblock \href {https://doi.org/10.1109/jproc.2019.2921977}
+  {\path{doi:10.1109/jproc.2019.2921977}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/jproc.2019.2921977}
+
+\bibitem{Wang_2019a}
+S.~Wang, T.~Tuor, T.~Salonidis, K.~K. Leung, C.~Makaya, T.~He, K.~Chan,
+  \href{http://dx.doi.org/10.1109/jsac.2019.2904348}{Adaptive federated
+  learning in resource constrained edge computing systems}, IEEE Journal on
+  Selected Areas in Communications 37~(6) (2019) 1205–1221.
+\newblock \href {https://doi.org/10.1109/jsac.2019.2904348}
+  {\path{doi:10.1109/jsac.2019.2904348}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/jsac.2019.2904348}
+
+\bibitem{Lim_2020}
+W.~Y.~B. Lim, N.~C. Luong, D.~T. Hoang, Y.~Jiao, Y.-C. Liang, Q.~Yang,
+  D.~Niyato, C.~Miao,
+  \href{http://dx.doi.org/10.1109/comst.2020.2986024}{Federated learning in
+  mobile edge networks: A comprehensive survey}, IEEE Communications Surveys \&
+  Tutorials 22~(3) (2020) 2031–2063.
+\newblock \href {https://doi.org/10.1109/comst.2020.2986024}
+  {\path{doi:10.1109/comst.2020.2986024}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/comst.2020.2986024}
+
+\bibitem{Wang_2019}
+X.~Wang, Y.~Han, C.~Wang, Q.~Zhao, X.~Chen, M.~Chen,
+  \href{http://dx.doi.org/10.1109/mnet.2019.1800286}{In-edge ai:
+  Intelligentizing mobile edge computing, caching and communication by
+  federated learning}, IEEE Network 33~(5) (2019) 156–165.
+\newblock \href {https://doi.org/10.1109/mnet.2019.1800286}
+  {\path{doi:10.1109/mnet.2019.1800286}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/mnet.2019.1800286}
+
+\bibitem{Yang_2019}
+Z.~Yang, K.~Yang, L.~Lei, K.~Zheng, V.~C.~M. Leung,
+  \href{http://dx.doi.org/10.1109/jiot.2018.2836144}{Blockchain-based
+  decentralized trust management in vehicular networks}, IEEE Internet of
+  Things Journal 6~(2) (2019) 1495–1505.
+\newblock \href {https://doi.org/10.1109/jiot.2018.2836144}
+  {\path{doi:10.1109/jiot.2018.2836144}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/jiot.2018.2836144}
+
+\bibitem{Kang_2019}
+J.~Kang, R.~Yu, X.~Huang, M.~Wu, S.~Maharjan, S.~Xie, Y.~Zhang,
+  \href{http://dx.doi.org/10.1109/jiot.2018.2875542}{Blockchain for secure and
+  efficient data sharing in vehicular edge computing and networks}, IEEE
+  Internet of Things Journal 6~(3) (2019) 4660–4670.
+\newblock \href {https://doi.org/10.1109/jiot.2018.2875542}
+  {\path{doi:10.1109/jiot.2018.2875542}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/jiot.2018.2875542}
+
+\bibitem{Lu_2019}
+Z.~Lu, G.~Qu, Z.~Liu, \href{http://dx.doi.org/10.1109/tits.2018.2818888}{A
+  survey on recent advances in vehicular network security, trust, and privacy},
+  IEEE Transactions on Intelligent Transportation Systems 20~(2) (2019)
+  760–776.
+\newblock \href {https://doi.org/10.1109/tits.2018.2818888}
+  {\path{doi:10.1109/tits.2018.2818888}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/tits.2018.2818888}
+
+\bibitem{Liu_2020}
+F.~Liu, W.~Yuan, C.~Masouros, J.~Yuan,
+  \href{http://dx.doi.org/10.1109/twc.2020.3015735}{Radar-assisted predictive
+  beamforming for vehicular links: Communication served by sensing}, IEEE
+  Transactions on Wireless Communications 19~(11) (2020) 7704–7719.
+\newblock \href {https://doi.org/10.1109/twc.2020.3015735}
+  {\path{doi:10.1109/twc.2020.3015735}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/twc.2020.3015735}
+
+\bibitem{Huang_2020}
+L.~Huang, S.~Bi, Y.-J.~A. Zhang,
+  \href{http://dx.doi.org/10.1109/tmc.2019.2928811}{Deep reinforcement learning
+  for online computation offloading in wireless powered mobile-edge computing
+  networks}, IEEE Transactions on Mobile Computing 19~(11) (2020) 2581–2593.
+\newblock \href {https://doi.org/10.1109/tmc.2019.2928811}
+  {\path{doi:10.1109/tmc.2019.2928811}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/tmc.2019.2928811}
+
+\bibitem{Feng_2019}
+S.~Feng, Y.~Zhang, S.~E. Li, Z.~Cao, H.~X. Liu, L.~Li,
+  \href{http://dx.doi.org/10.1016/j.arcontrol.2019.03.001}{String stability for
+  vehicular platoon control: Definitions and analysis methods}, Annual Reviews
+  in Control 47 (2019) 81–97.
+\newblock \href {https://doi.org/10.1016/j.arcontrol.2019.03.001}
+  {\path{doi:10.1016/j.arcontrol.2019.03.001}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1016/j.arcontrol.2019.03.001}
+
+\bibitem{Tang_2020}
+F.~Tang, Y.~Kawamoto, N.~Kato, J.~Liu,
+  \href{http://dx.doi.org/10.1109/jproc.2019.2954595}{Future intelligent and
+  secure vehicular network toward 6g: Machine-learning approaches}, Proceedings
+  of the IEEE 108~(2) (2020) 292–307.
+\newblock \href {https://doi.org/10.1109/jproc.2019.2954595}
+  {\path{doi:10.1109/jproc.2019.2954595}}.
+\newline\urlprefix\url{http://dx.doi.org/10.1109/jproc.2019.2954595}
+
+\bibitem{breslau1999web}
+L.~Breslau, P.~Cao, L.~Fan, G.~Phillips, S.~Shenker, Web caching and
+  {Zipf}-like distributions: evidence and implications, in: Proceedings of the
+  IEEE INFOCOM '99. Eighteenth Annual Joint Conference of the IEEE Computer and
+  Communications Societies, IEEE, 1999, pp. 126--134.
+\newblock \href {https://doi.org/10.1109/INFCOM.1999.749260}
+  {\path{doi:10.1109/INFCOM.1999.749260}}.
+
+\end{thebibliography}
