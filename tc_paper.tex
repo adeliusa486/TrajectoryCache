@@ -588,18 +588,18 @@
 	
 	\begin{table}[htbp]
 		\centering
-		\caption{\hl{Wall-Clock Execution Overhead and Real-Time RSU Profiling Across Caching Policies (16,346 Requests).}}
+		\caption{Wall-Clock Execution Overhead: Rule-Based Scoring vs. Learning-Based Value Updates.}
 		\label{tab:computational_cost}
-		\renewcommand{\arraystretch}{1.2}
+		\small
 		\resizebox{\linewidth}{!}{%
-		\begin{tabular}{l c c l}
+		\begin{tabular}{l c c c}
 			\toprule
-			\textbf{Policy Class} & \textbf{Time / Decision} & \textbf{Total Run Time} & \textbf{Real-Time Feasibility} \\
+			\textbf{Policy Class} & \textbf{Time / Decision ($\mu$s)} & \textbf{Simulation Run Time (s)} & \textbf{Overhead Factor} \\
 			\midrule
-			LRU / FIFO ($\mathcal{O}(1)$ Recency) & $1.2 \;\mu\mathrm{s}$ & $1.51 \;\mathrm{s}$ & $\checkmark$ Ultra-light baseline \\
-			LFU ($\mathcal{O}(1)$ Frequency) & $2.1 \;\mu\mathrm{s}$ & $1.76 \;\mathrm{s}$ & $\checkmark$ Minimal overhead \\
-			\textbf{TrajectoryCache (Rule)} & $\mathbf{38.4 \;\mu\mathrm{s}}$ & $\mathbf{4.45 \;\mathrm{s}}$ & $\checkmark$ \textbf{Real-Time Compliant} \\
-			QLearningCache (Online RL) & $42.8 \;\mu\mathrm{s}$ & $4.89 \;\mathrm{s}$ & $\checkmark$ Real-Time Compliant \\
+			LRU / FIFO (Classical O(1)) & $1.2 \; \mu$s & $1.51$ s & $1.0\times$ (Base) \\
+			LFU (Frequency Tracking) & $2.1 \; \mu$s & $1.76$ s & $1.16\times$ \\
+			TrajectoryCache (Rule-Based O(C)) & $38.4 \; \mu$s & $4.45$ s & $2.94\times$ \\
+			QLearningCache (TD Learning) & $42.8 \; \mu$s & $4.89$ s & $3.24\times$ \\
 			\bottomrule
 		\end{tabular}%
 		}
