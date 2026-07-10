@@ -341,35 +341,8 @@
 	
 	\begin{figure}[t]
 		\centering
-		\begin{tikzpicture}
-			\begin{axis}[
-				width=0.98\columnwidth,
-				height=6.5cm,
-				ybar=2pt,
-				bar width=0.45cm,
-				ylabel={Mean Cache Miss Rate (\%)},
-				ymin=0, ymax=80,
-				symbolic x coords={LRU, FIFO, Random, LFU, TC ($W$=0.2)},
-				xtick=data,
-				xticklabel style={font=\small},
-				enlarge x limits=0.12,
-				legend style={at={(0.98,0.98)}, anchor=north east, font=\scriptsize},
-				nodes near coords,
-				nodes near coords align={vertical},
-				every node near coord/.style={font=\tiny},
-				grid=major, grid style={dotted, gray!35},
-				tick label style={font=\scriptsize},
-				label style={font=\small}
-				]
-				\addplot[fill=tcblue!80, draw=tcblue] coordinates {
-					(LRU, 66.16)
-					(FIFO, 68.65)
-					(Random, 68.10)
-					(LFU, 52.85)
-					(TC ($W$=0.2), 52.05)};
-			\end{axis}
-		\end{tikzpicture}
-		\caption{Mean cache miss rate across 10 seeds at $\alpha=0.8$. TC ($W=0.2$) achieves the lowest miss rate. LFU is the strongest baseline; TC's 0.80~pp advantage over LFU is statistically significant ($p=0.042$, Wilcoxon signed-rank test, one-sided).}
+		\includegraphics[width=0.98\linewidth]{figures/fig_miss_bar_fig2.png}
+		\caption{Mean cache miss rate across 10 seeds at $\alpha=0.8$. TC ($W=0.2$) achieves the lowest miss rate (52.05\%). LFU is the strongest baseline (52.85\%); TC's 0.80~pp advantage over LFU is statistically significant ($p=0.042$, Wilcoxon signed-rank test, one-sided).}
 		\label{fig:miss_bar}
 	\end{figure}
 	
@@ -613,19 +586,20 @@
 	A practical edge caching policy must execute within strict time budgets on resource-constrained road-side units. We profile the wall-clock execution time per cache eviction decision and total simulation run time across policy classes.
 	\end{hlblock}
 	
-	\begin{table}[t]
+	\begin{table}[htbp]
 		\centering
-		\caption{Wall-Clock Execution Overhead: Rule-Based Scoring vs. Learning-Based Value Updates.}
+		\caption{\hl{Wall-Clock Execution Overhead and RSU Real-Time Profiling Across Eviction Policy Classes (16,346 Requests).}}
 		\label{tab:computational_cost}
+		\renewcommand{\arraystretch}{1.2}
 		\small
-		\begin{tabular}{l c c c}
+		\begin{tabular}{l c c c l}
 			\toprule
-			\textbf{Policy Class} & \textbf{Time / Decision ($\mu$s)} & \textbf{Simulation Run Time (s)} & \textbf{Overhead Factor} \\
+			\textbf{Policy Class / Algorithm} & \textbf{Time / Decision} & \textbf{Total Run Time} & \textbf{Overhead Factor} & \textbf{Real-Time Status} \\
 			\midrule
-			LRU / FIFO (Classical O(1)) & $1.2 \; \mu$s & $1.51$ s & $1.0\times$ (Base) \\
-			LFU (Frequency Tracking) & $2.1 \; \mu$s & $1.76$ s & $1.16\times$ \\
-			TrajectoryCache (Rule-Based O(C)) & $38.4 \; \mu$s & $4.45$ s & $2.94\times$ \\
-			QLearningCache (TD Learning) & $42.8 \; \mu$s & $4.89$ s & $3.24\times$ \\
+			LRU / FIFO (Classical Recency) & $1.2 \;\mu\mathrm{s}$ & $1.51 \;\mathrm{s}$ & $1.00\times$ (Base) & $\checkmark$ Ultra-light ($\mathcal{O}(1)$) \\
+			LFU (Frequency Tracking) & $2.1 \;\mu\mathrm{s}$ & $1.76 \;\mathrm{s}$ & $1.16\times$ & $\checkmark$ Minimal ($\mathcal{O}(1)$) \\
+			\textbf{TrajectoryCache (Hybrid Rule)} & $\mathbf{38.4 \;\mu\mathrm{s}}$ & $\mathbf{4.45 \;\mathrm{s}}$ & $\mathbf{2.94\times}$ & $\checkmark$ \textbf{Real-Time Compliant} \\
+			QLearningCache (Online RL AI) & $42.8 \;\mu\mathrm{s}$ & $4.89 \;\mathrm{s}$ & $3.24\times$ & $\checkmark$ Real-Time Compliant \\
 			\bottomrule
 		\end{tabular}
 	\end{table}
