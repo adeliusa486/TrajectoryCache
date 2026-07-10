@@ -18,16 +18,15 @@
 \usepackage{balance}
 \usepackage{array}
 \usepackage{soul}
-\definecolor{tcyellow}{RGB}{255,242,153}
-\sethlcolor{tcyellow}
+\sethlcolor{yellow}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins,breakable}
 \newtcolorbox{hlblock}{
-	colback=yellow!35,
-	colframe=yellow!35,
+	colback=yellow!45,
+	colframe=yellow!85!orange,
 	arc=2pt,
-	boxrule=0pt,
-	left=3pt,right=3pt,top=3pt,bottom=3pt,
+	boxrule=0.8pt,
+	left=4pt,right=4pt,top=4pt,bottom=4pt,
 	breakable
 }
 \newcommand{\hlcrit}[1]{\textcolor{red}{\textbf{#1}}}
@@ -120,8 +119,10 @@
 	
 	Edge computing for vehicular networks overlaps with the related fields of secure data sharing using blockchain \cite{Yang_2019, Kang_2019}, network security and trust \cite{Lu_2019}, predictive beamforming using radar \cite{Liu_2020}, and computation offloading in wireless-powered networks \cite{Huang_2020}. The latency requirements of coordinated vehicle groups \cite{Feng_2019} further emphasize the need for responsive edge mechanisms \cite{Tang_2020}. These studies collectively support the premise that it is valuable to incorporate physical mobility into edge caching decisions. They also point out a recurring practical barrier: most mobility-aware approaches are based on large amounts of offline training, multi-node coordination, or substantial real-time computational requirements for neural network inference on limited hardware. Furthermore, most of the published work compares these systems to LRU or LFU without investigating the performance in the presence of different microscopic densities of traffic.
 	
-	\subsection{Positioning of TrajectoryCache}
-	TrajectoryCache diverges from the mobility-aware approaches mentioned above in three deliberate ways. First, it uses a closed-form scoring function that combines linear time-to-encounter estimates with request-frequency counts. Unlike DRL or federated learning methods, TC does not involve any offline training, any multi-node coordination, or any complicated spatial indexing. The algorithm executes a straightforward linear scan over cached items for each eviction decision. Second, the heuristic is analyzed under different vehicle densities. This assessment shows that the urgency signal is most useful at low-to-medium traffic density, where there are distinct traffic aggregations that cause demand surges which are not detected by frequency statistics. The discriminative value of the urgency signal decreases at high density. This boundary characterization is a contribution in its own right: it provides the practitioner with indications of when spatial augmentation is useful and when classical LFU is adequate. Third, to support open science and reproducibility, the entire simulation framework (including all TrajectoryCache algorithms and evaluation scripts) is publicly available at \url{https://anonymous.4open.science/r/TrajectoryCache-1D5C/}.
+	\subsection{Gap: Lack of Cross-Class Comparative Evaluation}
+	\begin{hlblock}
+	While existing literature extensively explores deep reinforcement learning, multi-agent coordination, and federated learning for vehicular edge caching, prior studies almost exclusively benchmark their proposed architectures against classical temporal heuristics such as LRU and LFU. Rigorous multi-seed comparative evaluations comparing lightweight rule-based heuristics directly against online reinforcement learning policies under identical vehicular mobility, physical positioning uncertainty, and wall-clock inference constraints remain largely absent. In particular, existing works rarely quantify the operational crossover boundary where spatial-urgency heuristics outperform or converge with learning-based policies across varying vehicular traffic densities. This comparative benchmark study systematically addresses this gap.
+	\end{hlblock}
 
 	\section{System Model and Problem Formulation}
 	\label{sec:system_model}
@@ -563,7 +564,9 @@
 
 	\subsection{Comparative Evaluation Against Spatial Proximity and Learning-Based Baselines}
 	
-	\hl{To ensure a rigorous cross-class comparison beyond classical recency/frequency heuristics, we benchmark TrajectoryCache against both a pure spatial proximity heuristic (ProximityCache) and a learning-based Temporal-Difference Q-Learning policy (QLearningCache). ProximityCache evicts the content item whose physical anchor location} $\ell_f$ \hl{is farthest from all currently approaching vehicles, ignoring request popularity. QLearningCache implements linear TD reinforcement learning over state features} $\mathbf{x}(f) = [U(f), P(f), 1]^T$, \hl{learning adaptive weights online via TD errors.}
+	\begin{hlblock}
+	To ensure a rigorous cross-class comparison beyond classical recency/frequency heuristics, we benchmark TrajectoryCache against both a pure spatial proximity heuristic (ProximityCache) and a learning-based Temporal-Difference Q-Learning policy (QLearningCache). ProximityCache evicts the content item whose physical anchor location $\ell_f$ is farthest from all currently approaching vehicles, ignoring request popularity. QLearningCache implements linear TD reinforcement learning over state features $\mathbf{x}(f) = [U(f), P(f), 1]^T$, learning adaptive weights online via TD errors.
+	\end{hlblock}
 	
 	\hlcrit{CRITICAL METHODOLOGICAL RIGOR: All comparative numbers reported below are derived strictly from 10 independent random seeds under non-overlapping evaluation windows without any synthetic extrapolation or data smoothing.}
 	
@@ -587,11 +590,15 @@
 		\end{tabular}
 	\end{table}
 	
-	As demonstrated in Table~\ref{tab:comparative_family}, \hl{pure proximity caching without popularity tracking fails severely (77.92\% miss rate), proving that spatial proximity alone cannot compensate for catalog demand skew. QLearningCache achieves competitive performance (53.42\%), matching strong LFU but falling slightly short of closed-form TrajectoryCache (52.54\%). This empirical result confirms that lightweight rule-based hybridization of spatial urgency and popularity achieves superior stability and accuracy compared to online TD learning under vehicular non-stationarity.}
+	\begin{hlblock}
+	As demonstrated in Table~\ref{tab:comparative_family}, pure proximity caching without popularity tracking fails severely (77.92\% miss rate), proving that spatial proximity alone cannot compensate for catalog demand skew. QLearningCache achieves competitive performance (53.42\%), matching strong LFU but falling slightly short of closed-form TrajectoryCache (52.54\%). This empirical result confirms that lightweight rule-based hybridization of spatial urgency and popularity achieves superior stability and accuracy compared to online TD learning under vehicular non-stationarity.
+	\end{hlblock}
 
 	\subsection{Sensitivity to GNSS/V2X Positioning Noise and Update Latency}
 	
-	\hl{Real-world vehicular edge networks experience GNSS positioning inaccuracies and V2X telemetry update delays. To evaluate robustness under uncertainty, we perturb vehicle positioning reports delivered to the RSU with additive Gaussian spatial noise between 0 and 15 meters and discrete telemetry lag between 1 and 3 simulation time steps.}
+	\begin{hlblock}
+	Real-world vehicular edge networks experience GNSS positioning inaccuracies and V2X telemetry update delays. To evaluate robustness under uncertainty, we perturb vehicle positioning reports delivered to the RSU with additive Gaussian spatial noise between 0 and 15 meters and discrete telemetry lag between 1 and 3 simulation time steps.
+	\end{hlblock}
 	
 	\begin{table}[t]
 		\centering
@@ -612,11 +619,15 @@
 		\end{tabular}
 	\end{table}
 	
-	Table~\ref{tab:gnss_sensitivity} \hl{demonstrates that pure spatial noise (15 meters standard deviation) has negligible impact on rule-based TC scoring because spatial urgency integrates over an 800-meter relevance zone, effectively averaging out zero-mean Gaussian jitter. Update lag (3 seconds) introduces minor degradation (+0.48 percentage points for TC), as vehicle positions are extrapolated from stale coordinates. Importantly, QLearningCache exhibits higher sensitivity to telemetry lag (+0.47 percentage points degradation), demonstrating that online value adaptation is vulnerable to delayed state observations.}
+	\begin{hlblock}
+	Table~\ref{tab:gnss_sensitivity} demonstrates that pure spatial noise (15 meters standard deviation) has negligible impact on rule-based TC scoring because spatial urgency integrates over an 800-meter relevance zone, effectively averaging out zero-mean Gaussian jitter. Update lag (3 seconds) introduces minor degradation (+0.48 percentage points for TC), as vehicle positions are extrapolated from stale coordinates. Importantly, QLearningCache exhibits higher sensitivity to telemetry lag (+0.47 percentage points degradation), demonstrating that online value adaptation is vulnerable to delayed state observations.
+	\end{hlblock}
 
 	\subsection{Computational Cost and Inference Overhead Profiling}
 	
-	\hl{A practical edge caching policy must execute within strict time budgets on resource-constrained road-side units. We profile the wall-clock execution time per cache eviction decision and total simulation run time across policy classes.}
+	\begin{hlblock}
+	A practical edge caching policy must execute within strict time budgets on resource-constrained road-side units. We profile the wall-clock execution time per cache eviction decision and total simulation run time across policy classes.
+	\end{hlblock}
 	
 	\begin{table}[t]
 		\centering
@@ -635,7 +646,9 @@
 		\end{tabular}
 	\end{table}
 	
-	As detailed in Table~\ref{tab:computational_cost}, \hl{rule-based TrajectoryCache requires only 38.4 microseconds per eviction decision on standard CPU hardware, introducing less than 3 seconds of cumulative overhead over 16,346 requests. Learning-based QLearning incurs slightly higher overhead due to continuous temporal-difference gradient updates (4.89 seconds total run time). Both remain well within real-time constraints for edge deployment.}
+	\begin{hlblock}
+	As detailed in Table~\ref{tab:computational_cost}, rule-based TrajectoryCache requires only 38.4 microseconds per eviction decision on standard CPU hardware, introducing less than 3 seconds of cumulative overhead over 16,346 requests. Learning-based QLearning incurs slightly higher overhead due to continuous temporal-difference gradient updates (4.89 seconds total run time). Both remain well within real-time constraints for edge deployment.
+	\end{hlblock}
 	
 	This boundary characterization is itself a useful finding. It tells practitioners that spatial urgency augmentation is most beneficial in moderate-traffic highway settings (such as inter-city corridors or off-peak highways) and offers diminishing returns in congested urban freeways where density is persistently high.
 	
