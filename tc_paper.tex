@@ -588,20 +588,21 @@
 	
 	\begin{table}[htbp]
 		\centering
-		\caption{\hl{Wall-Clock Execution Overhead and RSU Real-Time Profiling Across Eviction Policy Classes (16,346 Requests).}}
+		\caption{\hl{Wall-Clock Execution Overhead and Real-Time RSU Profiling Across Caching Policies (16,346 Requests).}}
 		\label{tab:computational_cost}
 		\renewcommand{\arraystretch}{1.2}
-		\small
-		\begin{tabular}{l c c c l}
+		\resizebox{\linewidth}{!}{%
+		\begin{tabular}{l c c l}
 			\toprule
-			\textbf{Policy Class / Algorithm} & \textbf{Time / Decision} & \textbf{Total Run Time} & \textbf{Overhead Factor} & \textbf{Real-Time Status} \\
+			\textbf{Policy Class} & \textbf{Time / Decision} & \textbf{Total Run Time} & \textbf{Real-Time Feasibility} \\
 			\midrule
-			LRU / FIFO (Classical Recency) & $1.2 \;\mu\mathrm{s}$ & $1.51 \;\mathrm{s}$ & $1.00\times$ (Base) & $\checkmark$ Ultra-light ($\mathcal{O}(1)$) \\
-			LFU (Frequency Tracking) & $2.1 \;\mu\mathrm{s}$ & $1.76 \;\mathrm{s}$ & $1.16\times$ & $\checkmark$ Minimal ($\mathcal{O}(1)$) \\
-			\textbf{TrajectoryCache (Hybrid Rule)} & $\mathbf{38.4 \;\mu\mathrm{s}}$ & $\mathbf{4.45 \;\mathrm{s}}$ & $\mathbf{2.94\times}$ & $\checkmark$ \textbf{Real-Time Compliant} \\
-			QLearningCache (Online RL AI) & $42.8 \;\mu\mathrm{s}$ & $4.89 \;\mathrm{s}$ & $3.24\times$ & $\checkmark$ Real-Time Compliant \\
+			LRU / FIFO ($\mathcal{O}(1)$ Recency) & $1.2 \;\mu\mathrm{s}$ & $1.51 \;\mathrm{s}$ & $\checkmark$ Ultra-light baseline \\
+			LFU ($\mathcal{O}(1)$ Frequency) & $2.1 \;\mu\mathrm{s}$ & $1.76 \;\mathrm{s}$ & $\checkmark$ Minimal overhead \\
+			\textbf{TrajectoryCache (Rule)} & $\mathbf{38.4 \;\mu\mathrm{s}}$ & $\mathbf{4.45 \;\mathrm{s}}$ & $\checkmark$ \textbf{Real-Time Compliant} \\
+			QLearningCache (Online RL) & $42.8 \;\mu\mathrm{s}$ & $4.89 \;\mathrm{s}$ & $\checkmark$ Real-Time Compliant \\
 			\bottomrule
-		\end{tabular}
+		\end{tabular}%
+		}
 	\end{table}
 	
 	\begin{hlblock}
