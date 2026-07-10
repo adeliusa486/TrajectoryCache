@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 # Default policies to benchmark (parameters match configs/simulation.yaml)
 DEFAULT_POLICIES = [
     ("trajectory", {"urgency_weight": 0.2}),
+    ("qlearning", {"lr": 0.05}),
     ("lfu", {"pop_window": 300.0}),
     ("lru", {}),
     ("random", {}),

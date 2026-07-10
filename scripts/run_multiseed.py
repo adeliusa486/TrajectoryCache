@@ -61,6 +61,7 @@ def main() -> None:
 
     class_names = {
         "trajectory": "TrajectoryCache",
+        "qlearning": "QLearning",
         "lfu": "LFU",
         "lru": "LRU",
         "random": "Random",

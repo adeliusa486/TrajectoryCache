@@ -52,6 +52,7 @@ def main():
         ("Random", "random", {}),
         ("LFU", "lfu", {}),
         ("Proximity", "proximity", {}),
+        ("QLearning", "qlearning", {"lr": 0.05}),
         ("TC (W=0.2)", "trajectory", {"urgency_weight": 0.2}),
     ]
     for label, key, kw in policies:
@@ -59,7 +60,7 @@ def main():
         out["experiment_1_baseline_comparison"][label] = {"mean": mean, "std": std}
         print(f"  {label:15s} {mean:6.2f} +/- {std:.2f}")
 
-    print("\n=== Experiment 2: GNSS/V2X noise + update-lag sensitivity (TC vs LFU) ===")
+    print("\n=== Experiment 2: GNSS/V2X noise + update-lag sensitivity (TC vs LFU vs QLearning) ===")
     lfu_mean, lfu_std = run_multi_seed("lfu", {})
     out["experiment_2_gnss_sensitivity"]["LFU_reference"] = {"mean": lfu_mean, "std": lfu_std}
     print(f"  LFU reference (telemetry-immune): {lfu_mean:.2f} +/- {lfu_std:.2f}")
@@ -76,17 +77,24 @@ def main():
         ("noise_15m_lag_3", 15.0, 3),
     ]
     for label, noise, lag in configs:
-        mean, std = run_multi_seed(
+        tc_mean, tc_std = run_multi_seed(
             "trajectory", {"urgency_weight": 0.2},
             extra_cfg={"pos_noise_std": noise, "update_lag_steps": lag},
         )
-        margin = mean - lfu_mean
+        ql_mean, ql_std = run_multi_seed(
+            "qlearning", {"lr": 0.05},
+            extra_cfg={"pos_noise_std": noise, "update_lag_steps": lag},
+        )
+        margin_tc = tc_mean - lfu_mean
+        margin_ql = ql_mean - lfu_mean
         out["experiment_2_gnss_sensitivity"][label] = {
-            "mean": mean, "std": std, "noise_std_m": noise,
-            "lag_steps": lag, "margin_vs_lfu_pp": margin,
+            "tc_mean": tc_mean, "tc_std": tc_std,
+            "ql_mean": ql_mean, "ql_std": ql_std,
+            "noise_std_m": noise, "lag_steps": lag,
+            "margin_tc_vs_lfu_pp": margin_tc,
+            "margin_ql_vs_lfu_pp": margin_ql,
         }
-        print(f"  {label:18s} noise={noise:5.1f}m lag={lag}step  "
-              f"{mean:6.2f} +/- {std:.2f}   margin vs LFU: {margin:+.2f}pp")
+        print(f"  {label:18s} noise={noise:5.1f}m lag={lag}step | TC: {tc_mean:6.2f}+/-{tc_std:.2f} | QL: {ql_mean:6.2f}+/-{ql_std:.2f}")
 
     out["_meta"] = {
         "seeds": SEEDS, "elapsed_s": time.time() - t0,

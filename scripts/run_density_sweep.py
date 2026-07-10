@@ -41,10 +41,10 @@ def main():
     print(f"\nDensity sweep | alpha={cfg.zipf_alpha} | seeds={args.seeds}")
     print(f"Densities: {DENSITIES}\n")
 
-    tc_means, lfu_means, tc_stds, lfu_stds = [], [], [], []
+    tc_means, lfu_means, ql_means, tc_stds, lfu_stds, ql_stds = [], [], [], [], [], []
 
     for n_veh in DENSITIES:
-        tc_vals, lfu_vals = [], []
+        tc_vals, lfu_vals, ql_vals = [], [], []
         cfg.n_vehicles = n_veh
         for seed in args.seeds:
             cfg.seed = seed
@@ -52,21 +52,22 @@ def main():
                 config=cfg,
                 policies=[
                     ("trajectory", {"urgency_weight": 0.2}),
+                    ("qlearning", {"lr": 0.05}),
                     ("lfu", {"pop_window": 300.0}),
                 ],
                 output_dir=None,
             )
             tc_vals.append(res["TrajectoryCache"].miss_rate * 100.0)
             lfu_vals.append(res["LFU"].miss_rate * 100.0)
+            ql_vals.append(res["QLearning"].miss_rate * 100.0)
 
-        tc_m, tc_s = float(np.mean(tc_vals)), float(np.std(tc_vals))
-        lfu_m, lfu_s = float(np.mean(lfu_vals)), float(np.std(lfu_vals))
-        margin = round(lfu_m - tc_m, 4)
-        tc_means.append(tc_m)
-        tc_stds.append(tc_s)
-        lfu_means.append(lfu_m)
-        lfu_stds.append(lfu_s)
-        print(f"  n_veh={n_veh:4d}  TC={tc_m:.2f}%  LFU={lfu_m:.2f}%  margin={margin:+.2f}%")
+        tc_means.append(float(np.mean(tc_vals)))
+        lfu_means.append(float(np.mean(lfu_vals)))
+        ql_means.append(float(np.mean(ql_vals)))
+        tc_stds.append(float(np.std(tc_vals)))
+        lfu_stds.append(float(np.std(lfu_vals)))
+        ql_stds.append(float(np.std(ql_vals)))
+        print(f"Density={n_veh:3d} | TC: {tc_means[-1]:.2f}% +/- {tc_stds[-1]:.2f}% | LFU: {lfu_means[-1]:.2f}% +/- {lfu_stds[-1]:.2f}% | QLearning: {ql_means[-1]:.2f}% +/- {ql_stds[-1]:.2f}%")
 
     out = args.output
     out.mkdir(parents=True, exist_ok=True)
@@ -76,6 +77,8 @@ def main():
         "tc_stds": [round(v, 4) for v in tc_stds],
         "lfu_means": [round(v, 4) for v in lfu_means],
         "lfu_stds": [round(v, 4) for v in lfu_stds],
+        "ql_means": [round(v, 4) for v in ql_means],
+        "ql_stds": [round(v, 4) for v in ql_stds],
     }
     fname = out / "density_sweep.json"
     with open(fname, "w") as f:
