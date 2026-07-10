@@ -131,24 +131,8 @@
 	
 	\begin{figure*}[t]
 		\centering
-		\begin{tikzpicture}[
-			node distance=1.5cm and 2.0cm,
-			box/.style={rectangle, draw=tcblue, thick, rounded corners=4pt, fill=tclightblue, minimum width=2.8cm, minimum height=1.1cm, align=center, font=\small},
-			policy/.style={rectangle, draw=tcgreen, thick, rounded corners=4pt, fill=tclightgreen, minimum width=3.2cm, minimum height=1.1cm, align=center, font=\small},
-			arrow/.style={-{Latex[length=3mm]}, thick, color=tcgray}
-		]
-			\node[box] (veh) {Vehicle Kinematics \\ $(x_v, v_v, \theta_v)$};
-			\node[box, below=1.0cm of veh] (req) {Content Request \\ Item $f$ at $\ell_f$};
-			\node[policy, right=2.5cm of veh] (tte) {Spatial Urgency Module \\ Linear TTE Estimation};
-			\node[policy, right=2.5cm of req] (pop) {Popularity Module \\ Sliding Window Count};
-			\node[policy, right=2.5cm of $(tte)!0.5!(pop)$] (evict) {Comparative Policy Decision \\ Rule-Based vs. Learning-Based};
-			
-			\draw[arrow] (veh) -- (tte);
-			\draw[arrow] (req) -- (pop);
-			\draw[arrow] (tte.east) -- (evict.north west);
-			\draw[arrow] (pop.east) -- (evict.south west);
-		\end{tikzpicture}
-		\caption{\hl{Architecture and decision pipeline of the comparative vehicular edge caching framework. Vehicle telemetry and content requests feed into spatial urgency and popularity estimation modules, which drive cache replacement under either closed-form rule-based scoring (TC/Proximity) or online temporal-difference learning (QLearning).}}
+		\includegraphics[width=0.82\linewidth]{figures/system_architecture_fig1.png}
+		\caption{\hl{System architecture of the comparative vehicular edge caching framework. Vehicular kinematic input $(p_v, v_v)$ subject to 0--15~m GNSS positioning noise and telemetry delay feeds into spatial urgency $U(f)$ and temporal popularity $P(f)$ extraction modules, which drive cache eviction decisions ($<43\,\mu\mathrm{s}$ execution time) under closed-form rule-based TrajectoryCache, online reinforcement learning QLearningCache, and classical baselines.}}
 		\label{fig:architecture}
 	\end{figure*}
 	
