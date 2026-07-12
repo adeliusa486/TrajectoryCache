@@ -3,6 +3,7 @@
 from .base import BaseCache, CacheItem
 from .adaptive import AdaptiveTrajectoryCache
 from .baselines import FIFOCache, LFUCache, ProximityCache, RandomCache
+from .expected_demand import ExpectedDemandCache
 from .lru import LRUCache
 from .trajectory import TrajectoryCache
 from .learned import QLearningCache
@@ -12,6 +13,7 @@ __all__ = [
     "CacheItem",
     "TrajectoryCache",
     "AdaptiveTrajectoryCache",
+    "ExpectedDemandCache",
     "LRUCache",
     "LFUCache",
     "RandomCache",
@@ -23,6 +25,7 @@ __all__ = [
 REGISTRY: dict[str, type[BaseCache]] = {
     "trajectory": TrajectoryCache,
     "adaptive": AdaptiveTrajectoryCache,
+    "expected_demand": ExpectedDemandCache,
     "lru": LRUCache,
     "lfu": LFUCache,
     "random": RandomCache,
