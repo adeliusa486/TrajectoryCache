@@ -1,0 +1,51 @@
+{
+  "hotspot1600": {
+    "sparse": {
+      "popularity": 0.44334622554950415,
+      "urgency_TC": 0.03829159749501491,
+      "exposure": 0.0231086714259628,
+      "pop_x_exposure": 0.40912576382834337
+    },
+    "moderate": {
+      "urgency_TC": 0.07234239843857272,
+      "popularity": 0.68411484643534,
+      "exposure": 0.017726515816764477,
+      "pop_x_exposure": 0.6760344646124862
+    },
+    "high": {
+      "urgency_TC": 0.07646314130502457,
+      "popularity": 0.7956849821767106,
+      "exposure": 0.033473944995341204,
+      "pop_x_exposure": 0.7904554011352367
+    }
+  },
+  "corridor10000": {
+    "sparse": {
+      "popularity": 0.6244045044046239,
+      "urgency_TC": 0.11530177114627105,
+      "exposure": 0.07587020265643009,
+      "pop_x_exposure": 0.5595214314239106
+    },
+    "moderate": {
+      "popularity": 0.7636342999950007,
+      "urgency_TC": 0.31223896040114857,
+      "exposure": 0.27006177419572697,
+      "pop_x_exposure": 0.7712179671965873
+    },
+    "high": {
+      "popularity": 0.7836793460939138,
+      "urgency_TC": 0.3608257621050123,
+      "exposure": 0.3240259338910103,
+      "pop_x_exposure": 0.8087764720515435
+    }
+  },
+  "_meta": {
+    "seeds": [
+      84810,
+      15592,
+      4278
+    ],
+    "t_pred_s": 30.0,
+    "metric": "mean Spearman rho vs next-30s request count"
+  }
+}
