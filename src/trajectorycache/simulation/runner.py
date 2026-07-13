@@ -27,6 +27,7 @@ class SimulationConfig:
     speed_std: float = 5.0
     platoon_size: int = 10  # vehicles per platoon (SUMO Krauss-like clustering)
     platoon_gap: float = 30.0  # max positional spread within platoon (metres)
+    unidirectional: bool = False  # all vehicles travel +x (matches NGSIM i-80)
 
     # Content
     n_items: int = 200
@@ -114,6 +115,7 @@ class SimulationRunner:
             platoon_size=self.cfg.platoon_size,
             platoon_gap=self.cfg.platoon_gap,
             seed=self.cfg.seed,
+            unidirectional=self.cfg.unidirectional,
         )
         self.catalog = ContentCatalog(
             n_items=self.cfg.n_items,

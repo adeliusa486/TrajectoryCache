@@ -71,6 +71,7 @@ class HighwaySimulation:
         platoon_size: int = 10,
         platoon_gap: float = 30.0,
         seed: int | None = None,
+        unidirectional: bool = False,
     ) -> None:
         self.road_length = road_length
         self.n_vehicles = n_vehicles
@@ -79,6 +80,7 @@ class HighwaySimulation:
         self.speed_std = speed_std
         self.platoon_size = max(1, platoon_size)
         self.platoon_gap = platoon_gap
+        self.unidirectional = unidirectional
         self.t: float = 0.0
 
         rng = np.random.default_rng(seed)
@@ -107,7 +109,7 @@ class HighwaySimulation:
             leader_speed = float(
                 np.clip(rng.normal(self.mean_speed, self.speed_std), 5.0, 50.0)
             )
-            direction = int(rng.choice([-1, 1]))
+            direction = 1 if self.unidirectional else int(rng.choice([-1, 1]))
 
             for i in range(self.platoon_size):
                 if vid >= self.n_vehicles:

@@ -70,3 +70,6 @@ logs/
 # Generated figures
 experiments/figures/*.pdf
 experiments/figures/*.png
+
+# Raw NGSIM trajectory data (large; download via scripts/adapters/ngsim_adapter.py)
+data/raw/ngsim/
