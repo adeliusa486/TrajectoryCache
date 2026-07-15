@@ -177,8 +177,43 @@ def fig_signal_correlation():
           ", ".join("%.3f" % m for m in means))
 
 
+# ============================ Figure 5 ============================
+def fig_freeflow():
+    """SU-LFU and EDC-LFU margin vs request radius on free-flow US-101."""
+    d = load("real_freeflow.json")
+    radii = sorted(d["by_radius"], key=lambda s: int(s))
+    su_m, edc_m, su_e, edc_e = [], [], [], []
+    for r in radii:
+        p = d["by_radius"][r]
+        su = np.array(p["SU"]["per_seed"]); lfu = np.array(p["LFU"]["per_seed"])
+        edc = np.array(p["EDC"]["per_seed"])
+        su_m.append((su - lfu).mean()); su_e.append((su - lfu).std())
+        edc_m.append((edc - lfu).mean()); edc_e.append((edc - lfu).std())
+    x = np.arange(len(radii)); w = 0.36
+    fig, ax = plt.subplots(figsize=(4.8, 3.1))
+    ax.bar(x - w / 2, su_m, w, yerr=su_e, capsize=3, color=C_LOSE,
+           edgecolor="#222", linewidth=0.4,
+           error_kw=dict(elinewidth=0.7, ecolor="#444"), label="SU $-$ LFU")
+    ax.bar(x + w / 2, edc_m, w, yerr=edc_e, capsize=3, color="#8172B3",
+           edgecolor="#222", linewidth=0.4,
+           error_kw=dict(elinewidth=0.7, ecolor="#444"), label="EDC $-$ LFU")
+    ax.axhline(0, color="#333", lw=1.0)
+    ax.set_xticks(x); ax.set_xticklabels([f"{r} m" for r in radii])
+    ax.set_xlabel("Forward request radius $r_{\\mathrm{rel}}$")
+    ax.set_ylabel("Miss-rate margin vs LFU (pp)")
+    ax.text(0.02, 0.95, "above 0 = loses to LFU", transform=ax.transAxes,
+            fontsize=7.5, color="#C44E52", va="top", style="italic")
+    ax.set_title("Free-flow real traffic (US-101, 41 km/h, 10 seeds):\n"
+                 "SU loses to LFU at every radius", fontsize=8.5)
+    ax.legend(frameon=False, fontsize=8, loc="upper right")
+    fig.savefig(os.path.join(OUT, "fig_freeflow.pdf"))
+    plt.close(fig)
+    print("fig_freeflow.pdf  SU-LFU = " + ", ".join("%.2f" % m for m in su_m))
+
+
 if __name__ == "__main__":
     fig_miss_by_tier()
     fig_ablation_flip()
     fig_signal_correlation()
+    fig_freeflow()
     print("done ->", os.path.normpath(OUT))

@@ -53,10 +53,16 @@ N_ITEMS, CAP = 200, 20
 WARMUP, MEASURE = 150, 600  # steps (1 Hz)
 SEEDS = [84810, 15592, 4278, 98196, 37048, 33098, 30256, 19289, 97530, 14434]
 
-# The point of the experiment: read the SU-LFU margin as a function of radius on
-# free-flow data. 150 m = deployment-realistic; 800 m = the value under which SU
-# originally "won"; intermediate points trace the crossover.
-R_SWEEP = [150.0, 400.0, 800.0]
+# Read the SU-LFU margin as a function of radius on free-flow data. Radii are
+# chosen for THIS segment (~669 m) and free-flow speed (~41 km/h => 11.4 m/s):
+# the policy's lookahead distance is T_pred*speed = 30 s * 11.4 = ~340 m, so
+# r_rel=350 m is the critical point where SU should win if it ever does.
+#   150 m = deployment-realistic (short);
+#   350 m = lookahead-matched (SU's best case in free-flow);
+#   500 m = beyond lookahead but still < segment.
+# (An 800 m radius exceeds the segment length and is degenerate here, so it is
+#  intentionally excluded.)
+R_SWEEP = [150.0, 350.0, 500.0]
 
 POLICIES = [
     ("LRU", "lru", {}),
@@ -82,57 +88,93 @@ def _require_data(path: Path) -> None:
         )
 
 
-def run(data_path: Path, seeds=SEEDS, policies=POLICIES, radii=R_SWEEP, verbose=True):
+# --- worker side (multiprocessing): the pre-parsed window is shared once. ---
+_WINDOW = None  # set by the pool initializer
+
+
+def _init_worker(window):
+    global _WINDOW
+    _WINDOW = window
+
+
+def _run_one(task):
+    """One independent (radius, policy, seed) replay -> miss rate (%)."""
+    r, name, key, kw, seed, seg = task
+    pk = dict(kw)
+    if key in ("su", "proximity"):
+        pk["r_rel"] = r
+    if key == "expected_demand":
+        pk["r_req"] = r
+    cat = ContentCatalog(n_items=N_ITEMS, road_length=seg, active_zone_length=seg,
+                         zipf_alpha=0.8, seed=seed)
+    loc_map = cat.location_map()
+    cache = build_cache(key, CAP, **pk)
+    cache.clear()
+    for i, (t, vehs) in enumerate(_WINDOW):
+        if i == WARMUP:
+            cache.reset_stats()
+        for item in cat.generate_vehicle_requests(vehicles=vehs, r_request=r):
+            cache.request(item_id=item.item_id, item_location=item.location,
+                          current_time=t, vehicles=vehs, catalog=loc_map)
+    return (f"{r:.0f}", name, seed, cache.summary()["miss_rate"])
+
+
+def run(data_path: Path, seeds=SEEDS, policies=POLICIES, radii=R_SWEEP,
+        jobs=None, verbose=True):
+    from concurrent.futures import ProcessPoolExecutor
+    import os
+
     steps, meta = load_ngsim_steps(data_path)
     seg = meta["segment_length_m"]
     window = steps[: WARMUP + MEASURE]
+    jobs = jobs or os.cpu_count() or 4
     if verbose:
         print(
             f"Free-flow replay: seg={seg:.0f} m, {meta['n_vehicles']} vehicles, "
             f"mean {meta['mean_speed_mps'] * 3.6:.0f} km/h, mean on-road "
-            f"{meta['mean_on_road']:.0f}, steps used {len(window)}",
+            f"{meta['mean_on_road']:.0f}, steps used {len(window)} | {jobs} workers",
             flush=True,
         )
 
     by_radius = {}
-    for r in radii:
-        out = {}
-        for name, key, kw in policies:
-            pk = dict(kw)
-            if key in ("su", "proximity"):
-                pk["r_rel"] = r
-            if key == "expected_demand":
-                pk["r_req"] = r
-            per_seed = []
-            for seed in seeds:
-                cat = ContentCatalog(
-                    n_items=N_ITEMS, road_length=seg, active_zone_length=seg,
-                    zipf_alpha=0.8, seed=seed,
-                )
-                loc_map = cat.location_map()
-                cache = build_cache(key, CAP, **pk)
-                cache.clear()
-                for i, (t, vehs) in enumerate(window):
-                    if i == WARMUP:
-                        cache.reset_stats()
-                    for item in cat.generate_vehicle_requests(vehicles=vehs, r_request=r):
-                        cache.request(
-                            item_id=item.item_id, item_location=item.location,
-                            current_time=t, vehicles=vehs, catalog=loc_map,
-                        )
-                per_seed.append(cache.summary()["miss_rate"])
-            out[name] = {
-                "mean": float(np.mean(per_seed)),
-                "std": float(np.std(per_seed)),
-                "per_seed": [round(float(v), 4) for v in per_seed],
-            }
-        margin = (out["SU"]["mean"] - out["LFU"]["mean"]) * 100.0
-        if verbose:
-            print(f"  r_rel={r:5.0f} m  SU-LFU = {margin:+.2f} pp "
-                  f"(SU {out['SU']['mean']*100:.2f} vs LFU {out['LFU']['mean']*100:.2f})",
-                  flush=True)
-        by_radius[f"{r:.0f}"] = out
+    t_start = time.time()
+    with ProcessPoolExecutor(max_workers=jobs, initializer=_init_worker,
+                             initargs=(window,)) as ex:
+        for r in radii:  # radius-by-radius: gives incremental output + partial saves
+            rstr = f"{r:.0f}"
+            tasks = [(r, name, key, kw, seed, seg)
+                     for (name, key, kw) in policies for seed in seeds]
+            coll: dict[str, dict[int, float]] = {}
+            for _, name, seed, miss in ex.map(_run_one, tasks, chunksize=1):
+                coll.setdefault(name, {})[seed] = miss
+            out = {}
+            for name, key, kw in policies:
+                per_seed = [coll[name][s] for s in seeds]
+                out[name] = {
+                    "mean": float(np.mean(per_seed)),
+                    "std": float(np.std(per_seed)),
+                    "per_seed": [round(float(v), 4) for v in per_seed],
+                }
+            margin = out["SU"]["mean"] - out["LFU"]["mean"]  # already percentages
+            by_radius[rstr] = out
+            if verbose:
+                print(f"  [{time.time()-t_start:5.0f}s] r_rel={r:4.0f} m  "
+                      f"SU-LFU = {margin:+.2f} pp  "
+                      f"(SU {out['SU']['mean']:.2f}  LFU {out['LFU']['mean']:.2f}  "
+                      f"EDC {out['EDC']['mean']:.2f})", flush=True)
+            _save_partial(by_radius, meta, radii)
     return by_radius, meta
+
+
+def _save_partial(by_radius, meta, radii):
+    res = {
+        "tier": "real_freeflow", "status": "partial" if len(by_radius) < len(radii) else "complete",
+        "segment_m": meta["segment_length_m"], "mean_on_road": meta["mean_on_road"],
+        "mean_speed_kmh": meta["mean_speed_mps"] * 3.6, "seeds": SEEDS,
+        "radius_sweep_m": radii, "warmup": WARMUP, "measure": MEASURE,
+        "by_radius": by_radius,
+    }
+    (ROOT / "experiments" / "results" / "real_freeflow.json").write_text(json.dumps(res, indent=2))
 
 
 if __name__ == "__main__":
@@ -141,25 +183,21 @@ if __name__ == "__main__":
                     help="free-flow NGSIM-format CSV")
     ap.add_argument("--sanity", action="store_true",
                     help="1 seed, LFU/SU/EDC, single radius (quick check)")
+    ap.add_argument("--policies", nargs="+", default=None,
+                    help="subset of policy names to run, e.g. LFU SU EDC")
     args = ap.parse_args()
     _require_data(args.data)
+
+    pols = POLICIES
+    if args.policies:
+        want = set(args.policies)
+        pols = [p for p in POLICIES if p[0] in want]
 
     t0 = time.time()
     if args.sanity:
         pols = [p for p in POLICIES if p[0] in ("LFU", "SU", "EDC")]
         run(args.data, seeds=SEEDS[:1], policies=pols, radii=[150.0])
     else:
-        by_radius, meta = run(args.data)
-        res = {
-            "tier": "real_freeflow",
-            "data_file": args.data.name,
-            "segment_m": meta["segment_length_m"],
-            "mean_on_road": meta["mean_on_road"],
-            "mean_speed_kmh": meta["mean_speed_mps"] * 3.6,
-            "seeds": SEEDS, "radius_sweep_m": R_SWEEP,
-            "warmup": WARMUP, "measure": MEASURE, "by_radius": by_radius,
-        }
-        (ROOT / "experiments" / "results" / "real_freeflow.json").write_text(
-            json.dumps(res, indent=2))
+        run(args.data, policies=pols)  # saves real_freeflow.json incrementally
         print("saved real_freeflow.json")
     print(f"elapsed {time.time() - t0:.0f}s")
