@@ -194,6 +194,14 @@ make stats
 make figures
 ```
 
+**Real-trajectory tiers.** The congested tier replays NGSIM I-80
+(`scripts/run_real_ngsim.py`). The free-flow robustness check replays the
+least-congested NGSIM US-101 window across a request-radius sweep — download it
+once with `python scripts/adapters/download_us101_freeflow.py`, then run
+`python scripts/run_freeflow.py --policies LFU SU EDC` (uses all CPU cores).
+Per-seed outputs land in `experiments/results/` and the paper figures are built
+by `scripts/make_paper_figures.py`.
+
 The `SimulationRunner` explicitly controls Python's `random` module and NumPy's `np.random` states. Executing with `requirements-lock.txt` guarantees deterministic results. This mechanism is enforced in the CI pipeline via `tests/test_determinism.py`.
 
 ---
