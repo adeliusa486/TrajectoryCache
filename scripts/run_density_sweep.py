@@ -57,7 +57,7 @@ def main():
                 ],
                 output_dir=None,
             )
-            tc_vals.append(res["TrajectoryCache"].miss_rate * 100.0)
+            tc_vals.append(res["SU"].miss_rate * 100.0)
             lfu_vals.append(res["LFU"].miss_rate * 100.0)
             ql_vals.append(res["QLearning"].miss_rate * 100.0)
 

@@ -37,7 +37,7 @@ def test_multiseed_produces_valid_json(tmp_path):
 
     for cond in ("sumo", "simpy"):
         assert cond in data
-        for policy in ("TrajectoryCache", "LFU", "LRU", "FIFO", "Random"):
+        for policy in ("SU", "LFU", "LRU", "FIFO", "Random"):
             assert policy in data[cond]
             assert "per_seed" in data[cond][policy]
             assert "miss_rate_mean" in data[cond][policy]

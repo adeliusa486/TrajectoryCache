@@ -1,13 +1,13 @@
 """
-AdaptiveTrajectoryCache: density-adaptive urgency weighting.
+AdaptiveSpatialUrgencyCache: density-adaptive urgency weighting.
 
-The fixed-weight TrajectoryCache uses a single tuned urgency weight W for all
+The fixed-weight SpatialUrgencyCache (SU) uses a single tuned urgency weight W for all
 conditions. The density sweep (paper Section 6) shows this is suboptimal: the
 spatial urgency signal helps at low-to-moderate vehicle density but saturates
 and becomes harmful at high density, so the best W is itself a function of how
 many vehicles are currently near the cache.
 
-AdaptiveTrajectoryCache removes the manual W hyperparameter by setting the
+AdaptiveSpatialUrgencyCache removes the manual W hyperparameter by setting the
 urgency weight at each eviction from the locally sensed vehicle density. It uses
 the full urgency weight (w_max) when the coverage zone is sparse and ramps the
 weight linearly to zero as density approaches the empirically/analytically
@@ -23,13 +23,13 @@ calibration to the predictive crossover model of Section 6.
 
 from __future__ import annotations
 
-from .trajectory import TrajectoryCache
+from .trajectory import SpatialUrgencyCache
 
 
-class AdaptiveTrajectoryCache(TrajectoryCache):
-    """TrajectoryCache with density-adaptive urgency weight."""
+class AdaptiveSpatialUrgencyCache(SpatialUrgencyCache):
+    """SpatialUrgencyCache (SU) with density-adaptive urgency weight."""
 
-    name: str = "AdaptiveTC"
+    name: str = "AdaptiveSU"
 
     def __init__(
         self,
@@ -78,3 +78,7 @@ class AdaptiveTrajectoryCache(TrajectoryCache):
         # Set the urgency weight from current local density, then score as usual.
         self.W = self._adaptive_w(self._local_density(vehicles))
         return super()._score_all(catalog, vehicles, t)
+
+
+# Backward-compatible alias (formerly AdaptiveTrajectoryCache).
+AdaptiveTrajectoryCache = AdaptiveSpatialUrgencyCache

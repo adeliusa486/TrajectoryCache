@@ -3,7 +3,7 @@
 ## ✅ Completed Components
 
 ### Cache Layer
-- `TrajectoryCache` — full paper algorithm: composite scoring, min-max normalisation, sliding popularity window, spatial urgency with TTE decay, eviction logic
+- `SpatialUrgencyCache` (SU; alias `TrajectoryCache`) — full paper algorithm: composite scoring, min-max normalisation, sliding popularity window, spatial urgency with TTE decay, eviction logic
 - `LRUCache` — O(1) OrderedDict-based LRU
 - `LFUCache` — frequency-dict-based LFU
 - `RandomCache` — random eviction
@@ -87,7 +87,7 @@
 
 1. **FastAPI not installable in offline container** — API tests skipped during CI in this environment; all core logic tests pass.
 2. **`_score_all_cached` uses t=0.0** in the force-evict path — minor: scores are still correctly relative.
-3. **Thread safety** — `TrajectoryCache._req_times` is not lock-protected; fine for single-threaded simulation, needs mutex for concurrent API use under load.
+3. **Thread safety** — `SpatialUrgencyCache._req_times` is not lock-protected; fine for single-threaded simulation, needs mutex for concurrent API use under load.
 4. **No persistent vehicle state across requests** in the API — vehicles must be re-sent on every `POST /cache/request`.
 
 ---

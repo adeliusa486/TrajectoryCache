@@ -141,7 +141,7 @@ def smoke_api_request():
 
 def main() -> None:
     print("\n" + "=" * 55)
-    print("  TrajectoryCache  -  Smoke Test Suite")
+    print("  SpatialUrgencyCache (SU)  -  Smoke Test Suite")
     print("=" * 55 + "\n")
 
     tests = [

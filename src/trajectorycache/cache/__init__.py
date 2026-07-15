@@ -1,18 +1,20 @@
 """Cache replacement policy implementations."""
 
 from .base import BaseCache, CacheItem
-from .adaptive import AdaptiveTrajectoryCache
+from .adaptive import AdaptiveSpatialUrgencyCache, AdaptiveTrajectoryCache
 from .baselines import FIFOCache, LFUCache, ProximityCache, RandomCache
 from .expected_demand import ExpectedDemandCache
 from .lru import LRUCache
-from .trajectory import TrajectoryCache
+from .trajectory import SpatialUrgencyCache, TrajectoryCache
 from .learned import QLearningCache
 
 __all__ = [
     "BaseCache",
     "CacheItem",
-    "TrajectoryCache",
-    "AdaptiveTrajectoryCache",
+    "SpatialUrgencyCache",
+    "TrajectoryCache",  # deprecated alias of SpatialUrgencyCache
+    "AdaptiveSpatialUrgencyCache",
+    "AdaptiveTrajectoryCache",  # deprecated alias
     "ExpectedDemandCache",
     "LRUCache",
     "LFUCache",
@@ -23,8 +25,9 @@ __all__ = [
 ]
 
 REGISTRY: dict[str, type[BaseCache]] = {
-    "trajectory": TrajectoryCache,
-    "adaptive": AdaptiveTrajectoryCache,
+    "su": SpatialUrgencyCache,
+    "trajectory": SpatialUrgencyCache,  # deprecated alias key
+    "adaptive": AdaptiveSpatialUrgencyCache,
     "expected_demand": ExpectedDemandCache,
     "lru": LRUCache,
     "lfu": LFUCache,

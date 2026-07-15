@@ -30,7 +30,7 @@ from trajectorycache.utils.plotting import plot_bar_comparison
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="TrajectoryCache policy benchmark")
+    p = argparse.ArgumentParser(description="SpatialUrgencyCache (SU) policy benchmark")
     p.add_argument(
         "--config", type=Path, default=Path("configs/simulation.yaml"), help="YAML config file"
     )

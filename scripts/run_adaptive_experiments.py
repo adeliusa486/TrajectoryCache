@@ -2,7 +2,7 @@
 """
 Density-adaptive urgency weighting (#2) experiment.
 
-Compares AdaptiveTC against fixed-W TrajectoryCache (W=0.2) and LFU across the
+Compares AdaptiveSU against fixed-W SpatialUrgencyCache/SU (W=0.2) and LFU across the
 full density sweep, 5 seeds each, at alpha=0.8. The claim under test: adaptive-W
 matches or beats fixed-W at every density and, crucially, avoids fixed-W's loss
 at high density -- all without a manually tuned weight.
