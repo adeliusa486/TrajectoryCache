@@ -10,6 +10,7 @@ import subprocess
 import pytest
 
 
+@pytest.mark.slow
 def test_multiseed_produces_valid_json(tmp_path):
     result = subprocess.run(
         [

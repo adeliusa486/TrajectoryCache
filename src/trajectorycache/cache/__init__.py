@@ -1,12 +1,12 @@
 """Cache replacement policy implementations."""
 
-from .base import BaseCache, CacheItem
 from .adaptive import AdaptiveSpatialUrgencyCache, AdaptiveTrajectoryCache
+from .base import BaseCache, CacheItem
 from .baselines import FIFOCache, LFUCache, ProximityCache, RandomCache
 from .expected_demand import ExpectedDemandCache
+from .learned import QLearningCache
 from .lru import LRUCache
 from .trajectory import SpatialUrgencyCache, TrajectoryCache
-from .learned import QLearningCache
 
 __all__ = [
     "BaseCache",

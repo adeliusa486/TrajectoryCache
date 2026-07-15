@@ -1,8 +1,10 @@
 # Balancing Spatial Urgency and Content Popularity for Edge Caching in Vehicular Networks
 
 
+[![CI](https://github.com/adeliusa486/TrajectoryCache/actions/workflows/ci.yml/badge.svg)](https://github.com/adeliusa486/TrajectoryCache/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ---
 
@@ -206,14 +208,20 @@ TrajectoryCache/
 │   ├── content/         # Zipf catalog generation
 │   ├── evaluation/      # Benchmark orchestration
 │   └── simulation/      # Highway kinematics (platoon vs independent)
-├── scripts/             # CLI runners (e.g., compute_stats.py)
+├── scripts/             # CLI runners incl. make_paper_figures.py
 ├── experiments/
-│   ├── results/         # Committed, reproducible JSON outputs
+│   ├── results/         # Committed, reproducible per-seed JSON outputs
 │   └── figures/         # Auto-generated PDF plots
+├── paper_figures/       # Final paper figures (built from results/ JSONs)
 ├── configs/             # YAML configuration files
 ├── tests/               # Unit, integration, and determinism tests
-└── paper/               # Final Elsevier LaTeX source and compiled PDF
+├── .github/workflows/   # CI (tests + lint) and release automation
+└── CITATION.cff         # How to cite this work
 ```
+
+> The LaTeX manuscript is maintained in a separate repository and is not tracked
+> here; this repository holds only the code, data, and figures needed to
+> reproduce the results.
 
 
 ## License

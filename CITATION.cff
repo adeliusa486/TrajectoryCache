@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite the paper below."
+title: "Cross-Traffic Caching: a controlled evaluation harness for vehicular edge caching"
+abstract: >-
+  Open replay harness and cache-replacement policy implementations
+  (including the SpatialUrgencyCache/SU policy and the tuning-free
+  ExpectedDemandCache/EDC) for a controlled cross-traffic evaluation of
+  vehicular edge caching across synthetic, SUMO, and real NGSIM traffic tiers.
+type: software
+authors:
+  - given-names: Adeel
+    family-names: Ahmad
+    affiliation: "Islamic University of Madinah"
+  - given-names: Ali
+    family-names: Akrma
+    affiliation: "Islamic University of Madinah; King Fahd University of Petroleum and Minerals"
+  - given-names: Touqeer Ali
+    family-names: Syed
+    affiliation: "Islamic University of Madinah"
+license: MIT
+repository-code: "https://github.com/adeliusa486/TrajectoryCache"
+keywords:
+  - vehicular edge caching
+  - cache replacement
+  - evaluation methodology
+  - reproducibility
+  - SUMO
+  - NGSIM
+preferred-citation:
+  type: article
+  title: >-
+    A Controlled Cross-Traffic Evaluation of Vehicular Edge Caching:
+    Configuration Sensitivity of Spatial-Urgency Gains and a Robust
+    Tuning-Free Policy
+  authors:
+    - given-names: Adeel
+      family-names: Ahmad
+    - given-names: Ali
+      family-names: Akrma
+    - given-names: Touqeer Ali
+      family-names: Syed
+  year: 2026
+  notes: "Under review at Mobile Networks and Applications (Springer)."

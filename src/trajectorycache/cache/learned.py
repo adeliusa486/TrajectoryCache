@@ -90,7 +90,9 @@ class QLearningCache(BaseCache):
         if item_id in self._cache:
             self._hits += 1
             # Fast TD reward update for hit (+1.0)
-            u_norm, p_norm = self._fast_item_features(item_id, item_location, vehicles, catalog, current_time)
+            u_norm, p_norm = self._fast_item_features(
+                item_id, item_location, vehicles, catalog, current_time
+            )
             q_val = self.w_u * u_norm + self.w_p * p_norm + self.w_bias
             td_error = 1.0 - q_val
             self.w_u += self.lr * td_error * u_norm
@@ -144,7 +146,7 @@ class QLearningCache(BaseCache):
         val_victim = q_vals.get(victim_id, 0.0)
         val_new = q_vals.get(new_id, 0.0)
         t1 = time.perf_counter()
-        self.total_inference_time += (t1 - t0)
+        self.total_inference_time += t1 - t0
 
         if val_victim < val_new:
             del self._cache[victim_id]

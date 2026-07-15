@@ -15,7 +15,7 @@ def test_registry_builds_edc():
 def test_hit_then_miss_accounting():
     c = ExpectedDemandCache(capacity=5)
     assert c.request(1, 100.0, 0.0, vehicles=[], catalog={1: 100.0}) is False  # miss (insert)
-    assert c.request(1, 100.0, 1.0, vehicles=[], catalog={1: 100.0}) is True   # hit
+    assert c.request(1, 100.0, 1.0, vehicles=[], catalog={1: 100.0}) is True  # hit
     assert c.hits == 1 and c.misses == 1
 
 
@@ -79,8 +79,10 @@ def test_exposure_breaks_ties_toward_reachable_item():
     c.request(1, 1000.0, 0.0, vehicles=[], catalog=cat)
     c.request(2, 9000.0, 0.0, vehicles=[], catalog=cat)
     # now a vehicle approaches item 3 (at 5000) and item 1 (at 1000), not item 2
-    veh = [{"x": 4800.0, "speed": 30.0, "direction": 1},   # approaches 5000
-           {"x": 800.0, "speed": 30.0, "direction": 1}]    # approaches 1000
+    veh = [
+        {"x": 4800.0, "speed": 30.0, "direction": 1},  # approaches 5000
+        {"x": 800.0, "speed": 30.0, "direction": 1},
+    ]  # approaches 1000
     # request item 3: it has count 1 and exposure 1 -> score 1*(1+1)=2;
     # item 2 has count 1, exposure 0 -> score 1; item 1 count 1 exposure 1 -> 2.
     # victim = item 2 (score 1) < new item 3 (score 2) -> evict item 2.
