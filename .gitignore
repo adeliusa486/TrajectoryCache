@@ -73,3 +73,9 @@ experiments/figures/*.png
 
 # Raw NGSIM trajectory data (large; download via scripts/adapters/ngsim_adapter.py)
 data/raw/ngsim/
+
+# Session/chat artifacts and manuscript content — MUST stay out of the public repo
+FULL_CHAT_TRANSCRIPT.md
+SESSION_SUMMARY.md
+# Stray nested git clone (contains its own .git)
+/TrajectoryCache/
