@@ -8,11 +8,11 @@
 
 ## Project Overview
 
-This repository contains the official implementation of **TrajectoryCache (TC)**, a lightweight cache replacement heuristic designed for vehicular edge networks. 
+This repository contains the official implementation of **SpatialUrgencyCache (SU)** — referred to as **SU** throughout the accompanying paper and formerly named *TrajectoryCache* — a lightweight cache replacement heuristic designed for vehicular edge networks. (The old class name `TrajectoryCache` remains importable as a backward-compatible alias.)
 
 Traditional cache replacement policies such as Least Recently Used (LRU) or Least Frequently Used (LFU) assume a relatively stationary client population. In vehicular networks, vehicles enter and leave a roadside unit's coverage area in seconds, rendering historical frequency alone insufficient for predicting near-future demand.
 
-TrajectoryCache addresses this limitation by computing a spatial urgency signal based on the real-time kinematic trajectories (position, speed, heading) of approaching vehicles. By augmenting traditional popularity metrics with real-time trajectory forecasting, TC significantly reduces cache miss rates under bursty, platoon-based traffic conditions, reducing backhaul latency.
+SU addresses this limitation by computing a spatial urgency signal based on the real-time kinematic trajectories (position, speed, heading) of approaching vehicles. By augmenting traditional popularity metrics with real-time trajectory forecasting, SU changes cache miss rates under bursty, platoon-based traffic conditions; the accompanying measurement study characterizes exactly when this helps and when it does not.
 
 
 ---
@@ -29,7 +29,7 @@ TrajectoryCache addresses this limitation by computing a spatial urgency signal 
 
 ## Architecture and Methodology
 
-TrajectoryCache determines which content to evict by balancing two signals:
+SU determines which content to evict by balancing two signals:
 
 1. **Spatial Urgency:** How soon nearby vehicles will physically intercept the optimal coverage zone, estimated via linear time-to-encounter calculations.
 2. **Historical Popularity:** A sliding-window normalized frequency count of recent requests for the item.
@@ -44,7 +44,7 @@ Where W is a tunable hyperparameter between 0 and 1. At W = 0, the algorithm red
 
 ## Installation
 
-TrajectoryCache requires Python 3.10 or higher. 
+SU requires Python 3.10 or higher. 
 
 ### Standard Installation
 
@@ -80,15 +80,15 @@ pip install -e .
 
 ## Usage
 
-TrajectoryCache can be used programmatically, executed via CLI, or hosted as an API.
+SU can be used programmatically, executed via CLI, or hosted as an API.
 
 ### 1. Python Library
 
 ```python
-from trajectorycache import TrajectoryCache, SimulationRunner, SimulationConfig
+from trajectorycache import SpatialUrgencyCache, SimulationRunner, SimulationConfig
 
 # Initialize the spatial cache with a 20 percent urgency weight
-cache = TrajectoryCache(capacity=20, urgency_weight=0.2)
+cache = SpatialUrgencyCache(capacity=20, urgency_weight=0.2)
 
 # Configure a 200-vehicle highway simulation scenario
 config = SimulationConfig(
@@ -115,7 +115,7 @@ tc-benchmark --output experiments/results/
 
 ### 3. REST API and Docker
 
-To deploy TrajectoryCache as a microservice on a roadside unit:
+To deploy SU as a microservice on a roadside unit:
 
 ```bash
 tc-api
@@ -155,12 +155,12 @@ Evaluated on a 10 km highway with 200 vehicles, popularity skew alpha=0.8, and u
 
 | Policy         | SimPy (Independent Traffic) | SUMO (Platooning Traffic) |
 |----------------|-----------------------------|---------------------------|
-| **TrajectoryCache** | 54.51% +/- 1.44%              | **52.05% +/- 1.35%**        |
+| **SU** | 54.51% +/- 1.44%              | **52.05% +/- 1.35%**        |
 | LFU            | 53.32% +/- 1.73%              | 52.85% +/- 1.58%            |
 | LRU            | 69.73% +/- 2.28%              | 66.16% +/- 2.02%            |
 | FIFO           | 73.02% +/- 1.75%              | 68.65% +/- 1.71%            |
 
-TrajectoryCache outperforms the baselines under bursty, platooning conditions (Wilcoxon p=0.042, one-sided). Under uniform independent traffic, it converges with LFU, demonstrating that the urgency signal is specifically tuned for realistic, clustered vehicle arrivals.
+Under this original 10 km configuration (request radius 800 m), SU edges out LFU on platooning traffic (Wilcoxon p=0.042, one-sided) and converges with LFU under independent traffic. The accompanying paper is a controlled measurement study showing this margin is an artifact of the request-radius setting: under a realistic short radius the margin reverses and LFU wins. See the paper and `scripts/make_paper_figures.py` for the fair-protocol results.
 
 ---
 
@@ -202,7 +202,7 @@ The `SimulationRunner` explicitly controls Python's `random` module and NumPy's 
 TrajectoryCache/
 ├── src/trajectorycache/
 │   ├── api/             # FastAPI endpoints and schemas
-│   ├── cache/           # Core heuristic (trajectory.py) & baselines
+│   ├── cache/           # Core SU heuristic (trajectory.py: SpatialUrgencyCache) & baselines
 │   ├── content/         # Zipf catalog generation
 │   ├── evaluation/      # Benchmark orchestration
 │   └── simulation/      # Highway kinematics (platoon vs independent)

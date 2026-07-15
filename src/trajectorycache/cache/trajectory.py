@@ -1,5 +1,9 @@
 """
-TrajectoryCache: Spatial-urgency-aware cache replacement heuristic.
+SpatialUrgencyCache (SU): spatial-urgency-aware cache replacement heuristic.
+
+Formerly named ``TrajectoryCache``; the paper refers to this policy as SU.
+The old name is retained as a backward-compatible alias at the bottom of this
+module so existing imports keep working.
 
 Implements the composite scoring function from the paper:
     Score(f) = W * Urgency(f) + (1 - W) * Popularity(f)
@@ -23,9 +27,9 @@ logger = logging.getLogger(__name__)
 _EPSILON = 1e-6  # numerical safety constant
 
 
-class TrajectoryCache(BaseCache):
+class SpatialUrgencyCache(BaseCache):
     """
-    TrajectoryCache (TC) - mobility-aware edge cache replacement.
+    SpatialUrgencyCache (SU) - mobility-aware edge cache replacement.
 
     Parameters
     ----------
@@ -46,7 +50,7 @@ class TrajectoryCache(BaseCache):
         within this distance of an item's geographic location to contribute.
     """
 
-    name: str = "TrajectoryCache"
+    name: str = "SU"
 
     def __init__(
         self,
@@ -316,3 +320,10 @@ class TrajectoryCache(BaseCache):
         """Return sliding-window request counts for all tracked items."""
         with self._lock:
             return {k: len(v) for k, v in self._req_times.items() if v}
+
+
+# ---------------------------------------------------------------------------
+# Backward-compatible alias. The policy was formerly named "TrajectoryCache";
+# the paper and current code call it SU (SpatialUrgencyCache). Existing imports
+# of ``TrajectoryCache`` continue to resolve to the same class.
+TrajectoryCache = SpatialUrgencyCache

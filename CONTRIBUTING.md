@@ -1,4 +1,4 @@
-# Contributing to TrajectoryCache
+# Contributing to SpatialUrgencyCache (SU)
 
 Thank you for your interest in contributing! This document outlines the process for getting involved.
 

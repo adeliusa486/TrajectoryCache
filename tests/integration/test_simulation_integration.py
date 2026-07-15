@@ -60,7 +60,7 @@ def test_per_step_hit_rate_length(fast_config):
 
 def test_benchmark_returns_all_policies(fast_config):
     results = run_benchmark(config=fast_config, verbose=False)
-    for name in ["TrajectoryCache", "LRU", "LFU", "Random", "FIFO"]:
+    for name in ["SU", "LRU", "LFU", "Random", "FIFO"]:
         assert name in results
 
 

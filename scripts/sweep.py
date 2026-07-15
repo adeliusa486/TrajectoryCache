@@ -2,7 +2,7 @@
 """
 scripts/sweep.py
 
-Grid-search over TrajectoryCache hyperparameters (W, alpha_d, r_rel)
+Grid-search over SpatialUrgencyCache (SU) hyperparameters (W, alpha_d, r_rel)
 and report the best configuration by hit rate.
 
 Usage
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="TrajectoryCache hyperparameter sweep")
+    p = argparse.ArgumentParser(description="SpatialUrgencyCache (SU) hyperparameter sweep")
     p.add_argument("--config", type=Path, default=Path("configs/sweep.yaml"))
     p.add_argument("--output", type=Path, default=Path("experiments/results/sweep"))
     p.add_argument("--log-level", default="WARNING")

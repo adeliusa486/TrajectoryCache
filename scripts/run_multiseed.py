@@ -60,7 +60,7 @@ def main() -> None:
     print(f"{'='*90}\n")
 
     class_names = {
-        "trajectory": "TrajectoryCache",
+        "trajectory": "SU",
         "qlearning": "QLearning",
         "lfu": "LFU",
         "lru": "LRU",
@@ -86,8 +86,8 @@ def main() -> None:
             if name in all_miss_sumo:
                 all_miss_sumo[name].append(metrics.miss_rate * 100.0)
         tc_sumo = (
-            res_sumo["TrajectoryCache"].miss_rate * 100.0
-            if "TrajectoryCache" in res_sumo
+            res_sumo["SU"].miss_rate * 100.0
+            if "SU" in res_sumo
             else 0.0
         )
         print(f"TC={tc_sumo:.2f}%")
@@ -99,8 +99,8 @@ def main() -> None:
             if name in all_miss_simpy:
                 all_miss_simpy[name].append(metrics.miss_rate * 100.0)
         tc_simpy = (
-            res_simpy["TrajectoryCache"].miss_rate * 100.0
-            if "TrajectoryCache" in res_simpy
+            res_simpy["SU"].miss_rate * 100.0
+            if "SU" in res_simpy
             else 0.0
         )
         print(f"TC={tc_simpy:.2f}%")
@@ -124,7 +124,7 @@ def main() -> None:
         sim_mean, sim_std = float(np.mean(sim_v)), float(np.std(sim_v))
         sumo_mean, sumo_std = float(np.mean(sumo_v)), float(np.std(sumo_v))
 
-        display = "TrajectoryCache" if name == "TrajectoryCache" else name.upper()
+        display = "SU" if name == "SU" else name.upper()
         print(
             f"{display:<18} | {sim_mean:>6.2f} ± {sim_std:<5.2f}       | {sumo_mean:>6.2f} ± {sumo_std:<5.2f}"
         )
@@ -161,7 +161,7 @@ def main() -> None:
 
     # AFTER writing results to disk — validate schema immediately
     REQUIRED_KEYS = {"sumo", "simpy"}
-    REQUIRED_CONDITION_KEYS = {"TrajectoryCache", "LFU", "LRU", "FIFO", "Random"}
+    REQUIRED_CONDITION_KEYS = {"SU", "LFU", "LRU", "FIFO", "Random"}
     REQUIRED_POLICY_KEYS = {"miss_rate_mean", "miss_rate_std", "per_seed"}
     N_SEEDS = len(args.seeds)
 

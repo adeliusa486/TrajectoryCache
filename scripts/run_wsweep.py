@@ -33,7 +33,7 @@ PAPER_SEEDS = [84810, 15592, 4278, 98196, 37048, 33098, 30256, 19289, 97530, 144
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="W-sweep for TrajectoryCache")
+    p = argparse.ArgumentParser(description="W-sweep for SpatialUrgencyCache (SU)")
     p.add_argument("--config", type=Path, default=Path("configs/simulation.yaml"))
     p.add_argument("--output", type=Path, default=Path("experiments/results/wsweep"))
     # Paper Table 5 (ablation) uses the first 5 of the 10 seeds.
@@ -71,7 +71,7 @@ def main() -> None:
                 policies=[("trajectory", {"urgency_weight": w})],
                 output_dir=None,
             )
-            results_tc[w].append(res["TrajectoryCache"].miss_rate * 100.0)
+            results_tc[w].append(res["SU"].miss_rate * 100.0)
             print(
                 f"  seed={seed}  W={w:.1f}  TC={results_tc[w][-1]:.2f}%  "
                 f"LFU={results_lfu[-1]:.2f}%"

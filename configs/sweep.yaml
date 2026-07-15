@@ -1,4 +1,4 @@
-# TrajectoryCache hyperparameter sweep configuration.
+# SpatialUrgencyCache (SU) hyperparameter sweep configuration.
 # Used by scripts/sweep.py to grid-search optimal W, alpha_d, r_rel.
 
 base:

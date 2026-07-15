@@ -5,7 +5,7 @@ Multi-RSU SUMO validation grid (EDC edition).
 Extends the original single-scenario run_sumo_multirsu.py to the same
 geography x traffic grid used for the single-RSU EDC validation, and adds the
 ExpectedDemandCache (EDC) policy alongside LFU and the original fixed-weight
-TrajectoryCache. Five independent RSUs (each an independent cache of capacity
+SpatialUrgencyCache (SU). Five independent RSUs (each an independent cache of capacity
 20) are distributed every 2 km; miss rate is aggregated over all RSUs. Every
 policy replays the SAME SUMO Krauss traffic per (geometry, traffic, seed).
 

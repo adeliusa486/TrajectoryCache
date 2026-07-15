@@ -1,10 +1,13 @@
 """
-TrajectoryCache - Spatial-urgency-aware edge cache for vehicular networks.
+Spatial-urgency-aware edge cache for vehicular networks.
+
+The primary spatial policy is ``SpatialUrgencyCache`` (SU), formerly named
+``TrajectoryCache`` (still importable as a backward-compatible alias).
 
 Quick start
 -----------
->>> from trajectorycache import TrajectoryCache, SimulationRunner, SimulationConfig
->>> cache = TrajectoryCache(capacity=20, urgency_weight=0.5)
+>>> from trajectorycache import SpatialUrgencyCache, SimulationRunner, SimulationConfig
+>>> cache = SpatialUrgencyCache(capacity=20, urgency_weight=0.5)
 >>> cfg   = SimulationConfig(n_steps=500, seed=42)
 >>> runner = SimulationRunner(cache=cache, config=cfg)
 >>> result = runner.run()
@@ -20,6 +23,7 @@ from .cache import (
     LFUCache,
     LRUCache,
     RandomCache,
+    SpatialUrgencyCache,
     TrajectoryCache,
     build_cache,
 )
@@ -31,7 +35,8 @@ __all__ = [
     # Cache
     "BaseCache",
     "CacheItem",
-    "TrajectoryCache",
+    "SpatialUrgencyCache",
+    "TrajectoryCache",  # deprecated alias
     "LRUCache",
     "LFUCache",
     "RandomCache",
